@@ -106,10 +106,10 @@
         <a href="/member/new">회원가입</a></div>
       <div th:if="${session.memberSessionDTO} == null" class="right" style="margin: 0 1em; line-height: 3em;">
         <a th:href="@{/login(refererURL=${refererURL})}">로그인</a></div>
-      <div th:unless="${session.memberSessionDTO} == null" class="right" style="line-height: 3em;">
-        <a href="#"><span th:text="${session.memberSessionDTO.loginId}"></span>님 설정</a></div>
       <div th:unless="${session.memberSessionDTO} == null" class="right" style="margin: 0 1em; line-height: 3em;">
         <a th:href="@{/logout(refererURL=${refererURL})}">로그아웃</a></div>
+      <div th:unless="${session.memberSessionDTO} == null" class="right" style="line-height: 3em;">
+        <a href="#"><span th:text="${session.memberSessionDTO.memberName}" style="font-weight: bold;"></span>님</a></div>
     </div>
 
     <div class="nav float-container a-container">
