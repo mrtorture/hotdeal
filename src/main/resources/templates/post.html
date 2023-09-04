@@ -230,7 +230,8 @@
          orderBy=${postPreviewParams.orderBy}, category=${postPreviewParams.category}, createDate=${postPreviewParams.createDate}, keyword=${postPreviewParams.keyword},
          pageNumber=${postPreviewParams.pageNumber})}" class="left">삭제</a>
       <a th:if="(${session.memberSessionDTO} != null) and (${session.memberSessionDTO.memberId} == ${postViewDTO.memberId})"
-         th:href="@{/posts/{postId}/update(postId=*{postId}, refererURL=${refererURL})}" class="left" style="margin: 0 0.5em;">수정</a>
+         th:href="@{/posts/{postId}/update(postId=*{postId}, refererURL=${refererURL}, board=${postPreviewParams.board},
+         orderBy=${postPreviewParams.orderBy})}" class="left" style="margin: 0 0.5em;">수정</a>
       <a th:unless="${session.memberSessionDTO} == null" href="/posts/new" class="left">글쓰기</a>
     </div>
 

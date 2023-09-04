@@ -230,6 +230,7 @@ public class PostController {
 
     @GetMapping("/{postId}/update")
     public String getUpdateForm(@PathVariable Long postId,
+                                @ModelAttribute PostPreviewParams postPreviewParams,
                                 @SessionAttribute MemberSessionDTO memberSessionDTO,
                                 RedirectAttributes redirectAttributes, Model model) {
         log.info("PostController.getUpdateForm()");
