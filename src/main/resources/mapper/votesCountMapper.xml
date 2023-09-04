@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="toyproject.hotdeal.dao.VotesCountMapper">
+    <insert id="save">
+        INSERT INTO votes_count(post_id, votes_count, create_date)
+        SELECT post_id, 0, create_date
+        FROM post
+        WHERE post_id = #{postId}
+    </insert>
+    <delete id="delete">
+        DELETE FROM votes_count
+        WHERE post_id = #{postId}
+    </delete>
+    <update id="increase">
+        UPDATE votes_count
+        SET votes_count = votes_count + 1
+        WHERE post_id = #{postId}
+    </update>
+    <update id="decrease">
+        UPDATE votes_count
+        SET votes_count = votes_count - 1
+        WHERE post_id = #{postId}
+    </update>
+</mapper>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head th:fragment="head(title, style)">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!--    title for body content-->
+    <title th:replace="${title}"></title>
+
+    <style>
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+
+        .header {
+            overflow: hidden;
+        }
+        .header div {
+            margin: 2em 0;
+        }
+        .header div a {
+            display: inline-block;
+            text-decoration: none;
+            color: unset;
+        }
+        #logo {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .header .right a {
+            margin: 0 0 0 1em;
+            line-height: 3em;
+        }
+        .header .left {
+            float: left;
+        }
+        .header .right {
+            float: right;
+        }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background-color: #666;
+            overflow: hidden;
+        }
+        .nav div {
+            margin: 0 1em;
+        }
+        .nav div a {
+            display: inline-block;
+            padding: 0.5em 1em;
+            text-decoration: none;
+            color: white;
+        }
+        .nav .left {
+            float: left;
+        }
+        .nav .right {
+            float: right;
+        }
+
+        .info {
+            border-top: solid 2px #666;
+            border-bottom: solid 1px #666;
+            overflow: hidden;
+
+        }
+        .info div a {
+            display: inline-block;
+            margin: 1em 1em;
+            text-decoration: none;
+            color: unset;
+        }
+        .info .left {
+            float: left;
+        }
+        .info .right {
+            float: right;
+        }
+
+        .footer {
+            overflow: hidden;
+        }
+        .footer > div {
+            width: 50%;
+            box-sizing: border-box;
+            padding: 2em;
+        }
+        .footer div div {
+            opacity: 0.7;
+        }
+        .footer .left {
+            float: left;
+        }
+        .footer .right {
+            float: right;
+        }
+
+    </style>
+
+<!--    css for body content-->
+    <style th:replace="${style}"></style>
+
+</head>
+
+<body th:fragment="body(content, script)">
+    <div class="container">
+
+        <div class="header">
+            <div class="left"><a id="logo" href="/">Hot Deal Man</a></div>
+            <div class="right" th:if="${session.memberSessionDTO} == null"><a href="/member/new">회원가입</a></div>
+            <div class="right" th:if="${session.memberSessionDTO} == null"><a th:href="@{/login(refererURL=${refererURL})}">로그인</a></div>
+            <div class="right" th:unless="${session.memberSessionDTO} == null"><a href="#"><span th:text="${session.memberSessionDTO.loginId}"></span>님 설정</a></div>
+            <div class="right" th:unless="${session.memberSessionDTO} == null"><a th:href="@{/logout(refererURL=${refererURL})}">로그아웃</a></div>
+        </div>
+
+        <div class="nav">
+            <div class="left"><a href="#">최신순</a></div>
+            <div class="left"><a href="#">추천순</a></div>
+            <div class="left"><a href="#">관심목록</a></div>
+            <div class="left"><a href="#">내가쓴글</a></div>
+            <div class="right"><a href="#">검색</a></div>
+        </div>
+
+    <!--    body content-->
+        <th:block th:replace="${content}"></th:block>
+
+        <div class="info">
+            <div class="left"><a href="#">사이트소개</a></div>
+            <div class="left"><a href="#">공지사항</a></div>
+            <div class="left"><a href="#">이용약관</a></div>
+            <div class="left"><a href="#">고객의소리</a></div>
+            <div class="left"><a href="#">메일문의</a></div>
+        </div>
+        <div class="footer">
+            <div class="left">
+                <div style="font-weight: bold; padding: 0.5em 0;">주식회사 핫딜맨</div>
+                <div>경기 하남시 감일백제로 65</div>
+                <div>사업자등록번호: 120-88-12345</div>
+                <div>대표이사: 윤주호</div>
+            </div>
+            <div class="left">
+                <div style="font-weight: bold; padding: 0.5em 0;">고객센터</div>
+                <div>Tel: 010-6484-5974</div>
+                <div>Fax: 02-404-5974</div>
+                <div>Email: joejoeya@gmail.com</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--script for body content-->
+    <script th:replace="${script}"></script>
+
+</body>
+
+</html>

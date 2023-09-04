@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="toyproject.hotdeal.dao.CommentMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="commentId">
+        INSERT INTO comment(post_id, parent_id, member_id, create_date, comment_content)
+        VALUES(#{postId}, #{parentId}, #{memberId}, NOW(), #{commentContent})
+    </insert>
+
+    <select id="findByCommentId" resultType="CommentDTO">
+        SELECT comment_id, post_id, parent_id, member_id, comment_content, create_date, deleted
+        FROM comment
+        WHERE comment_id = #{commentId}
+    </select>
+    <select id="findAll" resultType="CommentDTO">
+        SELECT comment_id, post_id, parent_id, member_id, comment_content, create_date, deleted
+        FROM comment
+    </select>
+    <select id="findByPostId" resultType="CommentViewDTO">
+        SELECT c.comment_id, c.post_id, c.parent_id, c.member_id, m.member_name, c.comment_content, c.create_date, c.deleted
+        FROM
+            (SELECT comment_id FROM comment WHERE post_id = #{postId} ORDER BY comment_id) AS tmp
+            INNER JOIN comment AS c USING (comment_id)
+            INNER JOIN member AS m USING (member_id)
+    </select>
+    <select id="getCountByPostId">
+        SELECT COUNT(comment_id)
+        FROM comment
+        WHERE post_id = #{postId}
+    </select>
+    <select id="getCountByParentId">
+        SELECT COUNT(comment_id)
+        FROM comment
+        WHERE parent_id = #{parentId}
+    </select>
+
+    <delete id="delete">
+        DELETE FROM comment
+        WHERE comment_id = #{commentId}
+    </delete>
+
+    <update id="update">
+        UPDATE comment
+        SET comment_content = #{commentContent}, deleted = #{deleted}
+        WHERE comment_id = #{commentId}
+    </update>
+
+</mapper>

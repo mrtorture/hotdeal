@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <title>Hot Deal Man</title>
+
+  <style>
+    /* common elements */
+    .inline-block {
+      display: inline-block;
+    }
+    .float-container {
+      overflow: hidden;
+    }
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
+    .a-container a {
+      display: inline-block;
+      text-decoration: none;
+      color: unset;
+      cursor: pointer;
+    }
+    .submit {
+      display: inline-block;
+      border: none;
+      font-size: inherit; 
+      cursor: pointer;
+    }
+    .input {
+      padding: 0.5em;
+      font-size: inherit;
+      border: solid 1px #ccc;
+    }
+    .input:hover {
+      background-color: #eee;
+    }
+    .input:focus {
+      background-color: #eee;
+      outline: none;
+    }
+    .off {
+      display: none;
+    }
+    .on {
+      display: unset;
+    }
+
+    /* inner elements or conditions */
+    /* layout-header */
+    .container {
+      width: 80%;
+      margin: auto;
+    }
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background-color: #666;
+    }
+    .nav div {
+      margin: 0 0em;
+    }
+    .nav div > a {
+      padding: 0.5em 2em;
+      color: white;
+    }
+    .nav div > a:hover {
+      background-color: #555;
+    }
+
+    /* content */
+    #link {
+      color: unset;
+      text-decoration: none;
+    }
+    #link:hover {
+      color: dodgerblue;
+    }
+    .comment-set, .reply-set {
+      border-bottom: solid 1px #eee;
+    }
+    .comment-set > div, .reply-set > div {
+      margin-top: 0.7em;
+      margin-bottom: 0.7em;
+    }
+    .comment-set > div:nth-child(3) {
+      margin-left: 2em;
+    }
+    .reply-set > div {
+      margin-left: 2em;
+    }
+    .bottom a {
+      padding: 0.5em 1em;
+      background-color: #666;
+      color:white;
+    }
+    .hover-underline:hover {
+      text-decoration: underline;
+    }
+
+    /* layout-footer */
+    .info {
+      border-top: solid 2px #666;
+      border-bottom: solid 1px #666;
+    }
+    .info a {
+      margin: 1em 1em;
+    }
+    .footer {
+      overflow: hidden;
+    }
+    .footer > div {
+      width: 50%;
+      box-sizing: border-box;
+      padding: 2em;
+    }
+    .footer div div {
+      opacity: 0.7;
+    }
+
+  </style>
+
+</head>
+<body>
+  <div class="container">
+
+    <div class="float-container a-container" style="margin: 2em 0;">
+      <div class="left"><a href="/" style="font-size: 2em; font-weight: bold;">Hot Deal Man</a></div>
+      <div th:if="${session.memberSessionDTO} == null" class="right" style="line-height: 3em;">
+        <a href="/member/new">회원가입</a></div>
+      <div th:if="${session.memberSessionDTO} == null" class="right" style="margin: 0 1em; line-height: 3em;">
+        <a th:href="@{/login(refererURL=${refererURL})}">로그인</a></div>
+      <div th:unless="${session.memberSessionDTO} == null" class="right" style="margin: 0 1em; line-height: 3em;">
+        <a th:href="@{/logout(refererURL=${refererURL})}">로그아웃</a></div>
+      <div th:unless="${session.memberSessionDTO} == null" class="right" style="line-height: 3em;">
+        <a href="#"><span th:text="${session.memberSessionDTO.memberName}" style="font-weight: bold;"></span>님</a></div>
+    </div>
+
+    <div class="nav float-container a-container">
+      <div class="left"><a href="/" th:attrappend="style = ${postPreviewParams.board == 'list' and postPreviewParams.orderBy.description == 'DATE' ? ' background: #444' : ''}">최신순</a></div>
+      <div class="left"><a href="/posts/list?orderBy=VOTE" th:attrappend="style = ${postPreviewParams.board == 'list' and postPreviewParams.orderBy.description == 'VOTE' ? ' background: #444' : ''}">추천순</a></div>
+      <div class="left"><a href="/posts/wish" th:attrappend="style = ${postPreviewParams.board == 'wish' ? ' background: #444' : ''}">찜목록</a></div>
+      <div class="left"><a href="/posts/my" th:attrappend="style = ${postPreviewParams.board == 'my' ? ' background: #444' : ''}">작성글</a></div>
+      <div class="right"><a onclick="document.getElementById('search-box').classList.toggle('on')"
+                            th:attrappend="style = ${postPreviewParams.board == 'search' ? ' background: #444' : ''}">검색</a></div>
+      <div id="search-box" class="right off">
+        <form action="/posts/search" id="search-form">
+          <input type="text" id="search-input" name="keyword" class="input"
+                 style="width: 15em; height: 1.4em; padding: 0.2em 2em 0.2em 0.2em; font-size: 0.9em;position: absolute; top: 50%; right: 7em; transform: translate(0, -50%)">
+          <a onclick="checkAndSearch(document.getElementById('search-input'), document.getElementById('search-form'))"
+             style="position: absolute; top: 50%; right: 6.4em; transform: translate(0, -50%); width: 1.5em; height: 1.5em; padding: 0;">
+            <img src="/search.png" style="width: 70%; height: 70%; padding: 15%; opacity: 0.5;" alt="">
+          </a>
+        </form>
+      </div>
+    </div>
+
+    <div th:object="${postViewDTO}" >
+      <div style="padding: 1em 0; border-bottom: solid 1px #666;">
+        <span style="font-size: 1.2em; font-weight: bold;">핫딜 게시글</span>
+      </div>
+
+      <div style="padding: 1.5em 0; border-bottom: solid 1px #ccc;">
+        <div id="category" th:text="*{category}" style="opacity: 0.7;" >컴퓨터</div>
+        <div>
+          <div class="right" style="margin: 0 1em; line-height: 4em;">조회 <span th:text="*{hit}">10</span></div>
+          <div class="right" style="line-height: 4em;">추천 <span th:text="*{votesCount}" class="votes-count">1</span></div>
+          <div th:text="*{title}" style="font-size: 1.5em;">Xbox 무선 컨트롤러 4세대</div>
+          <div id="price" th:text="*{price}" style="font-size: 1.3em; color: tomato;">52,240원</div>
+        </div>
+
+        <div style="margin-top: 1.5em;">
+          <a id="link" href="http://www.gmarket.co.kr"
+             th:href="*{link}" th:text="*{link}">http://www.gmarket.co.kr</a>
+        </div>
+      </div>
+
+      <div style="padding: 1.5em 0 0.7em; border-bottom: solid 1px #ccc;">
+        <div>
+          <div>
+            <img th:src="|/upload/*{storedFilename}|" style="width: 100%; object-fit: contain;">
+          </div>
+          <p th:text="*{content}">와우 회원이셔야 합니다. 회원 아닐시 2천원 더 비싸네요. <br>
+            쇼크블루 컬러이고 52,240원 나옵니다. 컨트롤러 찾으시는분들 참고하세요. <br>
+            서울/경기는 내일 도착 보장이네요.</p>
+        </div>
+
+        <div class="a-container" style="margin-top: 2em;">
+          <div class="inline-block">
+            <a onclick="onOffVote()" id="on-off-vote-button" style="font-weight: bold;">추천하기</a>
+            <span th:text="*{votesCount}" class="votes-count">1</span>
+          </div>
+          <div class="inline-block" style="margin: 0 0.5em;">
+            <a onclick="onOffWish()" id="on-off-wish-button" style="color: tomato; font-weight: bold;">찜하기</a>
+          </div>
+          <div class="inline-block">
+            <span>댓글</span>
+            <span id="comments-count">2</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div style="padding: 0.5em 0;">
+
+      <div class="float-container a-container member-only">
+        <input type="text" id="comment-input" class="input left" style="width: 95%; box-sizing: border-box;" placeholder="이 글에 댓글쓰기"></input>
+        <a onclick="saveComment(null, 'comment-input')" class="right" style="width: 4%; box-sizing: border-box; text-align: center; font-weight: bold; opacity: 0.7; line-height: 2em;">등록</a>
+      </div>
+
+      <div id="commentList"></div>
+
+    </div>
+
+    <div class="bottom float-container a-container" style="margin: 2em 0 3em 0;">
+      <a th:href="@{/posts/{board}(board=${postPreviewParams.board},
+         orderBy=${postPreviewParams.orderBy}, category=${postPreviewParams.category}, createDate=${postPreviewParams.createDate}, keyword=${postPreviewParams.keyword},
+         pageNumber=${postPreviewParams.pageNumber})}" href="/posts/" class="right">목록</a>
+      <a th:if="(${session.memberSessionDTO} != null) and (${session.memberSessionDTO.memberId} == ${postViewDTO.memberId})"
+         th:href="@{/posts/{postId}/delete(postId=*{postId}, board=${postPreviewParams.board},
+         orderBy=${postPreviewParams.orderBy}, category=${postPreviewParams.category}, createDate=${postPreviewParams.createDate}, keyword=${postPreviewParams.keyword},
+         pageNumber=${postPreviewParams.pageNumber})}" class="left">삭제</a>
+      <a th:if="(${session.memberSessionDTO} != null) and (${session.memberSessionDTO.memberId} == ${postViewDTO.memberId})"
+         th:href="@{/posts/{postId}/update(postId=*{postId}, refererURL=${refererURL})}" class="left" style="margin: 0 0.5em;">수정</a>
+      <a th:unless="${session.memberSessionDTO} == null" href="/posts/new" class="left">글쓰기</a>
+    </div>
+
+    <div class="info a-container">
+      <a href="#">사이트소개</a>
+      <a href="#">공지사항</a>
+      <a href="#">이용약관</a>
+      <a href="#">고객의소리</a>
+      <a href="#">메일문의</a>
+    </div>
+    <div class="footer">
+      <div class="left">
+        <div style="font-weight: bold; padding: 0.5em 0;">주식회사 핫딜맨</div>
+        <div>경기 하남시 감일백제로 65</div>
+        <div>사업자등록번호: 120-88-12345</div>
+        <div>대표이사: 윤주호</div>
+      </div>
+      <div class="left">
+        <div style="font-weight: bold; padding: 0.5em 0;">고객센터</div>
+        <div>Tel: 010-6484-5974</div>
+        <div>Fax: 02-404-5974</div>
+        <div>Email: joejoeya@gmail.com</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script th:inline="javascript">
+    let categoryElement = document.getElementById("category");
+    categoryElement.innerText = getCategory(categoryElement.innerText);
+
+    let priceElement = document.getElementById("price");
+    priceElement.innerText = getPrice(priceElement.innerText);
+
+    renderOnOffVoteButton();
+    renderVotesCount();
+    renderOnOffWishButton();
+    renderComments();
+
+    function renderOnOffVoteButton() {
+      let postId = [[${postViewDTO.postId}]];
+      let onOffVoteButton = document.getElementById("on-off-vote-button");
+      $.ajax({
+        type: "get",
+        url: "/votes/check?postId=" + postId,
+        success: function (res) {
+          if (res == 1) {
+            onOffVoteButton.classList.add("voted");
+            onOffVoteButton.innerText = "추천취소";
+            onOffVoteButton.style.color = "unset";
+          } else {
+            onOffVoteButton.classList.remove("voted");
+            onOffVoteButton.innerText = "추천하기";
+            onOffVoteButton.style.color = "dodgerblue";
+          }
+        },
+      })
+    }
+
+    function renderVotesCount() {
+      $.ajax({
+        type: "get",
+        url: "/votes/count?postId=" + [[${postViewDTO.postId}]],
+        success: function (res) {
+          let votesCounts = document.getElementsByClassName("votes-count");
+          for (let votesCount of votesCounts) {
+            votesCount.innerText = res;
+          }
+        }
+      });
+    }
+
+    function onOffVote() {
+      let postId = [[${postViewDTO.postId}]];
+      let onOffVoteButton = document.getElementById("on-off-vote-button");
+      if (onOffVoteButton.classList.contains("voted")) {
+        $.ajax({
+          type: "get",
+          url: "/votes/delete?postId=" + postId,
+          success: function () {
+            renderVotesCount();
+            renderOnOffVoteButton();
+          }
+        });
+      } else {
+        $.ajax({
+          type: "post",
+          url: "/votes/new",
+          data: {
+            "postId": postId
+          },
+          success: function () {
+            renderVotesCount();
+            renderOnOffVoteButton();
+          }
+        });
+      }
+
+    }
+
+    function renderOnOffWishButton() {
+      let postId = [[${postViewDTO.postId}]];
+      let onOffWishButton = document.getElementById("on-off-wish-button");
+      $.ajax({
+        type: "get",
+        url: "/wishes/check?postId=" + postId,
+        success: function (res) {
+          if (res == 1) {
+            onOffWishButton.classList.add("wished");
+            onOffWishButton.style.color = "unset";
+            onOffWishButton.innerText = "찜해제";
+          } else {
+            onOffWishButton.classList.remove("wished");
+            onOffWishButton.style.color = "tomato";
+            onOffWishButton.innerText = "찜하기";
+
+          }
+        }
+      })
+    }
+
+    function onOffWish() {
+      let postId = [[${postViewDTO.postId}]];
+      let onOffWishButton = document.getElementById("on-off-wish-button");
+
+      if (onOffWishButton.classList.contains("wished")) {
+        $.ajax({
+          type: "get",
+          url: "/wishes/delete?postId=" + postId,
+          success: function () {
+            renderOnOffWishButton();
+          }
+        })
+      } else {
+        $.ajax({
+          type: "post",
+          url: "/wishes/new",
+          data: {
+            "postId": postId
+          },
+          success: function () {
+            renderOnOffWishButton();
+          }
+
+        })
+      }
+
+
+    }
+
+    function renderComments() {
+      let postId = [[${postViewDTO.postId}]];
+
+      $.ajax({
+        type: "get",
+        url: "/comments?postId=" + postId,
+        // async: false,
+        success: function (res) {
+          console.log("요청 성공: ", res);
+
+          let sortedComments = getSortedComments(res, null);
+          console.log("sorted comments: ", sortedComments);
+
+          document.getElementById("comments-count").innerText = res.length;
+
+          // let commentsHtml = "";
+          let commentListDiv = document.getElementById("commentList");
+          commentListDiv.innerHTML = "";
+          for (let comment of sortedComments) {
+            // let commentOrReply;
+            // let deleted = "";
+            // let parentMemberName = "";
+            // if (comment.parentId == null) {
+            //   commentOrReply = "comment-set";
+            // } else {
+            //   commentOrReply = "reply-set";
+            //   for (let comment2 of sortedComments) {
+            //     if (comment2.commentId == comment.parentId && comment2.parentId != null) {
+            //       parentMemberName = "@" + comment2.memberName + " ";
+            //     }
+            //   }
+            // }
+            // if (comment.deleted == 1) {
+            //   deleted = " deleted-comment";
+            // }
+            // commentsHtml += "<div class='"+ commentOrReply + deleted + "'>";
+
+
+            //set comment-set or reply-set
+            let commentDiv = document.createElement('div');
+            let parentMemberName2 = "";
+            if (comment.parentId == null) {
+              commentDiv.classList.add('comment-set');
+            } else {
+              commentDiv.classList.add('reply-set');
+              for (let comment2 of sortedComments) {
+                if (comment2.commentId == comment.parentId && comment2.parentId != null) {
+                  parentMemberName2 = "@" + comment2.memberName;
+                }
+              }
+            }
+            if (comment.deleted == 1) {
+              commentDiv.classList.add('deleted-comment');
+            }
+
+            let commentContentId = "comment" + comment.commentId + "-content";
+            let commentUpdaterId = "comment" + comment.commentId + "-updater";
+            let replyWriterId = "comment" + comment.commentId + "-reply-writer";
+
+            // comment-content
+            // commentsHtml += "<div id=\"" + commentContentId + "\" class='a-container comment-content' style='position: relative;'>";
+            // commentsHtml += "<div style='font-weight: bold;'>" + comment.memberName + "</div>";
+            // commentsHtml += "<div><span style='font-weight: bold;'>" + parentMemberName + "</span>";
+            // commentsHtml += "<span>" + comment.commentContent + "</span>";
+            //
+            // if ([[${session.memberSessionDTO?.memberId}]] == comment.memberId) {
+            //   commentsHtml += "<span style='position: absolute; right: 0; top: 0;'>";
+            //   let authorOnlyButtonsId = "comment" + comment.commentId + "-author-only-buttons";
+            //   commentsHtml += "<img src=\"/3dots.png\" onclick='onOffAuthorOnlyButtons(\"" + authorOnlyButtonsId + "\")' style='width: 1.5em; height: 1.5em; opacity: 0.5; cursor: pointer;'>";
+            //   commentsHtml += "<span id=\"" + authorOnlyButtonsId + "\"" + "class='inline-block a-container author-only-buttons' style='display: none; position: absolute; right: 1.7em; top: 1.7em; z-index: 1; width: 4em; font-size: 0.8em;'>";
+            //   commentsHtml += "<div><a onclick='onOffCommentUpdater(\"" + commentUpdaterId + "\", \"" + commentContentId + "\", \"" + replyWriterId + "\")' class='hover-underline' style='width: 100%; margin-bottom: 1em;'>수정하기</a></div>";
+            //   commentsHtml += "<div><a onclick='deleteComment(\"" + comment.commentId + "\")' class='hover-underline' style='width: 100%;'>삭제하기</a></div></span></span>";
+            // }
+            // commentsHtml += "</div><div style='opacity: 0.5; font-size: 0.8em;'>";
+            // commentsHtml += "<span style='margin-right: 0.5em;'>" + comment.createDate + "</span>";
+            // commentsHtml += "<a onclick='onOffReplyWriter(\"" + replyWriterId + "\")' class='a-button member-only'>답글쓰기</a>";
+            // commentsHtml += "</div></div>";
+
+            // comment-content
+            commentDiv.insertAdjacentHTML("beforeend", "<div class='a-container comment-content' style='position: relative;'></div>");
+            commentDiv.lastElementChild.id = commentContentId;
+            commentDiv.lastElementChild.insertAdjacentHTML("beforeend", "<div style='font-weight: bold;'></div>");
+            commentDiv.lastElementChild.lastElementChild.innerText = comment.memberName;
+            commentDiv.lastElementChild.insertAdjacentHTML("beforeend", "<div><span style='font-weight: bold;'></span></div>");
+            commentDiv.lastElementChild.lastElementChild.lastElementChild.innerText = parentMemberName2 + " ";
+            commentDiv.lastElementChild.lastElementChild.insertAdjacentHTML("beforeend", comment.commentContent);
+            if ([[${session.memberSessionDTO?.memberId}]] == comment.memberId) {
+              let authorOnlyButtonsId = "comment" + comment.commentId + "-author-only-buttons";
+              commentDiv.lastElementChild.insertAdjacentHTML("beforeend", "<img src=\"/3dots.png\" alt=\"\" style=\"position: absolute; right: 0; top: 0; width: 1.5em; height: 1.5em; opacity: 0.5; cursor: pointer;\">")
+              commentDiv.lastElementChild.lastElementChild.onclick = function () {onOffAuthorOnlyButtons(authorOnlyButtonsId)};
+              commentDiv.lastElementChild.insertAdjacentHTML("beforeend", "<span class='inline-block a-container author-only-buttons' style='display: none; position: absolute; right: 1.7em; top: 1.7em; z-index: 1; width: 4em; font-size: 0.8em;'></span>");
+              commentDiv.lastElementChild.lastElementChild.id = authorOnlyButtonsId;
+              commentDiv.lastElementChild.lastElementChild.insertAdjacentHTML("beforeend", "<a class='hover-underline' style='width: 100%; margin-bottom: 1em;'>수정하기</a>");
+              commentDiv.lastElementChild.lastElementChild.lastElementChild.onclick = function () {onOffCommentUpdater(commentUpdaterId, commentContentId, replyWriterId)};
+              commentDiv.lastElementChild.lastElementChild.insertAdjacentHTML("beforeend", "<a class='hover-underline' style='width: 100%;'>삭제하기</a>");
+              commentDiv.lastElementChild.lastElementChild.lastElementChild.onclick = function () {deleteComment(comment.commentId)};
+            }
+            commentDiv.lastElementChild.insertAdjacentHTML("beforeend", "<div style=\"opacity: 0.5; font-size: 0.8em;\"></div>");
+            commentDiv.lastElementChild.lastElementChild.insertAdjacentHTML("beforeend", "<span style='margin-right: 0.5em;'></span>");
+            commentDiv.lastElementChild.lastElementChild.lastElementChild.textContent = comment.createDate;
+            commentDiv.lastElementChild.lastElementChild.insertAdjacentHTML("beforeend", "<a class='a-button member-only'>답글쓰기</a>");
+            commentDiv.lastElementChild.lastElementChild.lastElementChild.onclick = function () {onOffReplyWriter(replyWriterId)};
+
+            // comment-updater
+            // commentsHtml += "<div id=\"" + commentUpdaterId +  "\" class='float-container a-container comment-updater' style='display: none;'>";
+            // commentsHtml += "<input type='text' id=\"" + updaterInputId + "\" value=\"" + comment.commentContent + "\" class='input left' style='width: 90%; box-sizing: border-box;'>";
+            // commentsHtml += "<a onclick='restoreComments()' class=\"right\" style=\"margin: 0 0.5em; width: 4%; box-sizing: border-box; text-align: center; font-weight: bold; opacity: 0.7; line-height: 2em;\">취소</a>";
+            // commentsHtml += "<a onclick='updateComment(" + comment.commentId + ", \"" + updaterInputId + "\")' class=\"right\" style=\"width: 4%; box-sizing: border-box; text-align: center; font-weight: bold; opacity: 0.7; line-height: 2em;\">수정</a>";
+            // commentsHtml += "</div>";
+            // comment-reply-writer
+            // commentsHtml += "<div id=\"" + replyWriterId +"\" class='float-container a-container comment-reply-writer' style='display: none;'>";
+            // commentsHtml += "<input type='text' id=\""+ replyInputId + "\" class='input left' style='width: 95%; box-sizing: border-box;' placeholder='" + comment.memberName + "님에게 답글쓰기'></input>";
+            // commentsHtml += "<a onclick='saveComment(" + comment.commentId + ", \"" + replyInputId + "\")' class='right' style='width: 4%; box-sizing: border-box; text-align: center; font-weight: bold; opacity: 0.7; line-height: 2em;'>등록</a>";
+            // commentsHtml += "</div></div>";
+
+            let updaterInputId = "comment" + comment.commentId + "-updater-input";
+            let replyInputId = "comment" + comment.commentId + "-reply-input";
+
+            // comment-updater
+            commentDiv.insertAdjacentHTML("beforeend", "<div class='float-container a-container comment-updater' style='display: none;'></div>");
+            commentDiv.lastElementChild.id = commentUpdaterId;
+            commentDiv.lastElementChild.insertAdjacentHTML("beforeend", "<input type='text' class='input left' style='width: 90%; box-sizing: border-box;'>");
+            commentDiv.lastElementChild.lastElementChild.id = updaterInputId;
+            commentDiv.lastElementChild.lastElementChild.value = comment.commentContent;
+            commentDiv.lastElementChild.insertAdjacentHTML("beforeend", "<a onclick='restoreComments()' class=\"right\" style=\"margin: 0 0.5em; width: 4%; box-sizing: border-box; text-align: center; font-weight: bold; opacity: 0.7; line-height: 2em;\">취소</a>");
+            commentDiv.lastElementChild.insertAdjacentHTML("beforeend", "<a class=\"right\" style=\"width: 4%; box-sizing: border-box; text-align: center; font-weight: bold; opacity: 0.7; line-height: 2em;\">수정</a>")
+            commentDiv.lastElementChild.lastElementChild.onclick = function () {updateComment(comment.commentId, updaterInputId)};
+
+            // comment-reply-writer
+            commentDiv.insertAdjacentHTML("beforeend", "<div class='float-container a-container comment-reply-writer' style='display: none;'></div>");
+            commentDiv.lastElementChild.id = replyWriterId;
+            commentDiv.lastElementChild.insertAdjacentHTML("beforeend", "<input type='text' class='input left' style='width: 95%; box-sizing: border-box;'>");
+            commentDiv.lastElementChild.lastElementChild.id = replyInputId;
+            commentDiv.lastElementChild.lastElementChild.placeholder = comment.memberName + "님에게 답글쓰기";
+            commentDiv.lastElementChild.insertAdjacentHTML("beforeend", "<a class='right' style='width: 4%; box-sizing: border-box; text-align: center; font-weight: bold; opacity: 0.7; line-height: 2em;'>등록</a>");
+            commentDiv.lastElementChild.lastElementChild.onclick = function () {saveComment(comment.commentId, replyInputId)};
+
+            commentListDiv.appendChild(commentDiv);
+
+          }
+
+          // document.getElementById("commentList").innerHTML = commentsHtml;
+          hideMemberOnly();
+          hideDeletedComments();
+        }
+
+      })
+    }
+
+    function hideMemberOnly() {
+      if ([[${session.memberSessionDTO}]] == null) {
+        let buttons = document.getElementsByClassName("member-only");
+        for (let button of buttons) {
+          button.style.display = "none";
+        }
+      }
+    }
+
+    function hideDeletedComments() {
+      let deletedComments = document.getElementsByClassName("deleted-comment");
+      for (let deletedComment of deletedComments) {
+        deletedComment.innerHTML = "";
+        let div = document.createElement('div');
+        div.innerText = "삭제된 댓글 입니다";
+        div.style.opacity = 0.5;
+        deletedComment.append(div);
+      }
+    }
+
+    function getSortedComments(list, parentId) {
+      let children = [];
+      for (let comment of list) {
+        if (comment.parentId == parentId) {
+          children.push(comment);
+        }
+      }
+
+      let descendants = [];
+      for (let comment of children) {
+        descendants.push(...getSortedComments(list, comment.commentId));
+      }
+
+      let result = [];
+      if (parentId != null) {
+        for (let comment of list) {
+          if (comment.commentId == parentId) {
+            result.push(comment);
+          }
+        }
+      }
+      result.push(...descendants);
+
+      return result;
+    }
+
+    //to be modified to use inputElement
+    function saveComment(parentId, commentInputId) {
+      let postId = [[${postViewDTO.postId}]];
+      let commentContent = document.getElementById(commentInputId).value;
+
+      console.log("saveComment(): ", postId, parentId, commentContent);
+
+      $.ajax({
+        type: "post",
+        url: "/comments/new",
+        data: {
+          "postId": postId,
+          "parentId": parentId,
+          "commentContent": commentContent
+        },
+        success: function (res) {
+          console.log("saveComment() 요청 성공: ", res);
+
+          renderComments(res);
+          document.getElementById(commentInputId).value = "";
+        }
+      });
+
+    }
+
+    function deleteComment(commentId) {
+      $.ajax({
+        type: "get",
+        url: "/comments/" + commentId + "/delete",
+        success: function (res) {
+          console.log("요청 성공: ", res);
+
+          renderComments();
+        }
+      });
+    }
+
+    function updateComment(commentId, commentInputId) {
+      let commentContent = document.getElementById(commentInputId).value;
+
+      $.ajax({
+        type: "get",
+        url: "/comments/" + commentId + "/update",
+        data: {
+          "commentContent" : commentContent
+        },
+        success: function (res) {
+          console.log("요청 성공: ", res);
+
+          renderComments();
+        },
+      })
+    }
+
+    function onOffReplyWriter(elementId) {
+      let isOff = document.getElementById(elementId).style.display == "none";
+      restoreComments();
+
+      if (isOff) {
+        document.getElementById(elementId).style.display = "";
+      }
+    }
+
+    function onOffAuthorOnlyButtons(elementId) {
+      let isOff = document.getElementById(elementId).style.display == "none";
+
+      let authorOnlyButtons = document.getElementsByClassName("author-only-buttons");
+      for (let authorOnlyButton of authorOnlyButtons) {
+        authorOnlyButton.style.display = "none";
+      }
+
+      if (isOff) {
+        document.getElementById(elementId).style.display = "";
+      }
+    }
+
+    function restoreComments() {
+      let commentContents = document.getElementsByClassName("comment-content");
+      for (let commentContent of commentContents) {
+        commentContent.style.display = "";
+      }
+      let authorOnlyButtons = document.getElementsByClassName("author-only-buttons");
+      for (let authorOnlyButton of authorOnlyButtons) {
+        authorOnlyButton.style.display = "none";
+      }
+      let commentUpdaters = document.getElementsByClassName("comment-updater");
+      for (let commentUpdater of commentUpdaters) {
+        commentUpdater.style.display = "none";
+      }
+      let commentReplyWriters = document.getElementsByClassName("comment-reply-writer");
+      for (let commentReplyWriter of commentReplyWriters) {
+        commentReplyWriter.style.display = "none";
+      }
+    }
+
+    function onOffCommentUpdater(commentUpdaterId, commentContentId, replyWriterId) {
+      console.log("commentUpdaterId: ", commentUpdaterId);
+      console.log("commentContentId: ", commentContentId);
+      console.log("replyWriterId: ", replyWriterId);
+
+      let isOff = document.getElementById(commentUpdaterId).style.display == "none";
+      restoreComments();
+
+      if (isOff) {
+        document.getElementById(commentUpdaterId).style.display = "";
+        document.getElementById(commentContentId).style.display = "none";
+      }
+
+    }
+
+    function getCategory(cat) {
+      switch (cat) {
+        case "FOOD":
+          return "식품";
+        case "COMPUTER":
+          return "컴퓨터";
+        case "ELECTRONICS":
+          return "가전";
+        case "GAME":
+          return "게임";
+        case "CLOTHING":
+          return "의류";
+        case "GIFT_CARD":
+          return "상품권";
+        case "OTHERS":
+          return "기타";
+        default:
+          return cat;
+      }
+    }
+
+    function getPrice(str) {
+      if (str == null) {
+        return null;
+      }
+
+      let price = parseInt(str);
+
+      return numberWithCommas(price) + "원";
+    }
+
+    function numberWithCommas(int) {
+      if (int < 1000) {
+        return int;
+      }
+
+      let quotient = Math.floor(int / 1000);
+      let remainder = int % 1000;
+
+      if (remainder < 10) {
+        remainder = "00" + remainder.toString();
+      } else if (remainder < 100) {
+        remainder = "0" + remainder.toString();
+      }
+
+      return numberWithCommas(quotient).toString() + "," + remainder;
+    }
+
+    function numberWithCommas2(str) {
+      let pattern = '/(-?/d+)(/d{3})/';
+      str = str.toString();
+      while (pattern.test(str)) {
+        str.replace(pattern, "$1,$2");
+      }
+    }
+
+    function checkAndSearch(inputElement, formElement) {
+      if (inputElement.value.trim().length > 1) {
+        formElement.submit();
+      }
+    }
+
+  </script>
+
+</body>
+</html>

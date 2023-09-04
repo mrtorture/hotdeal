@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hot Deal Post</title>
+
+  <style>
+    .container {
+      width: 80%;
+      margin: auto;
+    }
+
+    .header {
+      overflow: hidden;
+    }
+    .header div {
+      margin: 2em 0;
+    }
+    .header div a {
+      display: inline-block;
+      text-decoration: none;
+      color: unset;
+    }
+    #logo {
+      font-size: 2em;
+      font-weight: bold;
+    }
+    .header .right a {
+      margin: 0 0 0 1em;
+      line-height: 3em;
+    }
+    .header .left {
+      float: left;
+    }
+    .header .right {
+      float: right;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background-color: #666;
+      overflow: hidden;
+    }
+    .nav div {
+      margin: 0 1em;
+    }
+    .nav div a {
+      display: inline-block;
+      padding: 0.5em 1em;
+      text-decoration: none;
+      color: white;
+    }
+    .nav .left {
+      float: left;
+    }
+    .nav .right {
+      float: right;
+    }
+
+    .info {
+      border-top: solid 2px #666;
+      border-bottom: solid 1px #666;
+      overflow: hidden;
+
+    }
+    .info div a {
+      display: inline-block;
+      margin: 1em 1em;
+      text-decoration: none;
+      color: unset;
+    }
+    .info .left {
+      float: left;
+    }
+    .info .right {
+      float: right;
+    }
+
+    .footer {
+      overflow: hidden;
+    }
+    .footer > div {
+      width: 50%;
+      box-sizing: border-box;
+      padding: 2em;
+    }
+    .footer div div {
+      opacity: 0.7;
+    }
+    .footer .left {
+      float: left;
+    }
+    .footer .right {
+      float: right;
+    }
+
+  </style>
+
+  <style>
+    #link {
+      color: unset;
+      text-decoration: none;
+    }
+    #link:hover {
+      color: dodgerblue;
+    }
+    .buttons {
+      margin: 2em 0 4em 0;
+      overflow: hidden;
+    }
+    .buttons a {
+      padding: 0.5em 1em;
+      background-color: #666;
+      color:white;
+      text-decoration: none;
+    }
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
+
+  </style>
+
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="header">
+      <div class="left"><a id="logo" href="/">Hot Deal Man</a></div>
+      <div class="right" th:if="${session.memberSessionDTO} == null"><a href="/member/new">회원가입</a></div>
+      <div class="right" th:if="${session.memberSessionDTO} == null"><a th:href="@{/login(refererURL=${refererURL})}">로그인</a></div>
+      <div class="right" th:unless="${session.memberSessionDTO} == null"><a href="#"><span th:text="${session.memberSessionDTO.loginId}"></span>님 설정</a></div>
+      <div class="right" th:unless="${session.memberSessionDTO} == null"><a th:href="@{/logout(refererURL=${refererURL})}">로그아웃</a></div>
+    </div>
+
+    <div class="nav">
+      <div class="left"><a href="#">최신순</a></div>
+      <div class="left"><a href="#">추천순</a></div>
+      <div class="left"><a href="#">관심목록</a></div>
+      <div class="left"><a href="#">내가쓴글</a></div>
+      <div class="right"><a href="#">검색</a></div>
+    </div>
+
+    <div th:object="${postViewDTO}" style="overflow: hidden;">
+      <div style="padding: 1em 0; border-bottom: solid 1px #666;">
+        <span style="font-size: 1.2em; font-weight: bold;">핫딜 게시글</span>
+      </div>
+
+      <div style="padding: 1.5em 0; border-bottom: solid 1px #ccc;">
+        <div id="category" style="opacity: 0.7;" th:text="*{category}">컴퓨터</div>
+        <div>
+          <div class="right" style="margin: 0 1em; line-height: 4em;">조회 <span th:text="*{hit}">10</span></div>
+          <div class="right" style="line-height: 4em;">추천 <span th:text="*{vote}">1</span></div>
+          <div style="font-size: 1.5em;" th:text="*{title}">Xbox 무선 컨트롤러 4세대</div>
+          <div id="price" style="font-size: 1.3em; color: tomato;" th:text="*{price}">52,240원</div>
+        </div>
+
+        <div style="margin-top: 1.5em; ">
+          <a id="link" href="http://www.gmarket.co.kr"
+             th:href="*{link}" th:text="*{link}">http://www.gmarket.co.kr</a>
+        </div>
+      </div>
+
+      <div style="margin: 1.5em 0; border-bottom: solid 1px #ccc;">
+        <div>
+          <img style="width: 100%; object-fit: contain;" th:src="|/upload/*{storedFilename}|">
+        </div>
+        <p th:text="*{content}">와우 회원이셔야 합니다. 회원 아닐시 2천원 더 비싸네요. <br>
+          쇼크블루 컬러이고 52,240원 나옵니다. 컨트롤러 찾으시는분들 참고하세요. <br>
+          서울/경기는 내일 도착 보장이네요.</p>
+      </div>
+
+      <div class="buttons">
+        <a th:href="@{/posts(pageNumber=${pageNumber})}" href="/posts/" class="right">목록</a>
+        <a th:if="(${session.memberSessionDTO} != null) and (${session.memberSessionDTO.memberId} == ${postViewDTO.memberId})"
+           th:href="@{/posts/{postId}/delete(postId=*{postId}, pageNumber=${pageNumber})}" class="left">삭제</a>
+        <a th:if="(${session.memberSessionDTO} != null) and (${session.memberSessionDTO.memberId} == ${postViewDTO.memberId})"
+           th:href="@{/posts/{postId}/update(postId=*{postId}, pageNumber=${pageNumber})}" class="left" style="margin: 0 0.5em;">수정</a>
+        <a th:unless="${session.memberSessionDTO} == null" href="/posts/new" class="left">글쓰기</a>
+      </div>
+
+    </div>
+
+    <div class="info">
+      <div class="left"><a href="#">사이트소개</a></div>
+      <div class="left"><a href="#">공지사항</a></div>
+      <div class="left"><a href="#">이용약관</a></div>
+      <div class="left"><a href="#">고객의소리</a></div>
+      <div class="left"><a href="#">메일문의</a></div>
+    </div>
+    <div class="footer">
+      <div class="left">
+        <div style="font-weight: bold; padding: 0.5em 0;">주식회사 핫딜맨</div>
+        <div>경기 하남시 감일백제로 65</div>
+        <div>사업자등록번호: 120-88-12345</div>
+        <div>대표이사: 윤주호</div>
+      </div>
+      <div class="left">
+        <div style="font-weight: bold; padding: 0.5em 0;">고객센터</div>
+        <div>Tel: 010-6484-5974</div>
+        <div>Fax: 02-404-5974</div>
+        <div>Email: joejoeya@gmail.com</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let categoryElement = document.getElementById("category");
+    categoryElement.innerText = setCategory(categoryElement.innerText);
+
+    let priceElement = document.getElementById("price");
+    priceElement.innerText = setPrice(priceElement.innerText);
+
+    function setCategory(cat) {
+      switch (cat) {
+        case "FOOD":
+          return "식품";
+        case "COMPUTER":
+          return "컴퓨터";
+        case "ELECTRONICS":
+          return "가전";
+        case "GAME":
+          return "게임";
+        case "CLOTHING":
+          return "의류";
+        case "GIFT_CARD":
+          return "상품권";
+        case "OTHERS":
+          return "기타";
+        default:
+          return cat;
+      }
+    }
+
+    function setPrice(str) {
+      if (str == null) {
+        return null;
+      }
+
+      let price = parseInt(str);
+
+      return numberWithCommas(price) + "원";
+    }
+
+    function numberWithCommas(int) {
+      if (int < 1000) {
+        return int;
+      }
+
+      let quotient = Math.floor(int / 1000);
+      let remainder = int % 1000;
+
+      if (remainder < 10) {
+        remainder = "00" + remainder.toString();
+      } else if (remainder < 100) {
+        remainder = "0" + remainder.toString();
+      }
+
+      return numberWithCommas(quotient).toString() + "," + remainder;
+    }
+
+    function numberWithCommas2(str) {
+      let pattern = '/(-?/d+)(/d{3})/';
+      str = str.toString();
+      while (pattern.test(str)) {
+        str.replace(pattern, "$1,$2");
+      }
+    }
+
+  </script>
+
+</body>
+
+</html>

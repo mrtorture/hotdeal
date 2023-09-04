@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <title>Member Join</title>
+
+  <style>
+    /* common elements */
+    .inline-block {
+      display: inline-block;
+    }
+    .float-container {
+      overflow: hidden;
+    }
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
+    .a-container a {
+      display: inline-block;
+      text-decoration: none;
+      color: unset;
+    }
+    .button {
+      display: inline-block;
+      border: none;
+      font-size: inherit; 
+      cursor: pointer;
+    }
+    .input {
+      padding: 0.5em;
+      font-size: inherit;
+      border: solid 1px #ccc;
+    }
+    .input:hover {
+      background-color: #eee;
+    }
+    .input:focus {
+      background-color: #eee;
+      outline: none;
+    }
+
+    /* inner elements or conditions */
+    .contents > div {
+      margin: 1.5em 0;
+    }
+    .input, .button {
+      width: 100%;
+      height: 3em;
+      box-sizing: border-box;
+    }
+    .button {
+      text-align: center;
+      line-height: 2em;
+      padding: 0.5em 1em;
+      background-color: #666;
+      color:white;
+    }
+    .button:hover {
+      background-color: #555;
+    }
+    .error-field {
+      border: red 1px solid;
+    }
+    .error-message {
+      color: red;
+      font-size: 0.8em;
+    }
+
+  </style>
+
+</head>
+<body>
+  <div style="width: 40%; margin: auto;">
+
+    <div class="a-container" style="text-align: center; margin: 4em auto 2em;">
+      <a href="/" style="font-size: 2em; font-weight: bold;">Hot Deal Man</a>
+    </div>
+
+    <div>
+      <span style="font-weight: bold;">회원 가입</span>
+    </div>
+
+    <form action method="post" id="member-save-form" th:object="${memberSaveDTO}" class="contents">
+      <div>
+        <input type="text" id="loginId" th:field="*{loginId}" class="input" th:errorclass="error-field"
+               placeholder="로그인 ID를 입력하세요" onblur="idValidation()">
+        <div id="id_validation_server" class="error-message" th:errors="*{loginId}"></div>
+        <div id="id_validation_browser" class="error-message"></div>
+      </div>
+  
+      <div>
+        <input type="text" id="loginPassword" th:field="*{loginPassword}" class="input" th:errorclass="error-field"
+               placeholder="로그인 패스워드를 입력하세요" onblur="passwordValidation()">
+        <div id="password_validation_server" class="error-message" th:errors="*{loginPassword}"></div>
+        <div id="password_validation_browser" class="error-message"></div>
+      </div>
+
+      <div>
+        <input type="text" id="loginPassword2" class="input" placeholder="패스워드를 한번 더 입력하세요"
+               onblur="passwordCheck()">
+        <div id="password_check" class="error-message"></div>
+      </div>
+  
+      <div>
+        <input type="text" id="memberName" th:field="*{memberName}" class="input" th:errorclass="error-field"
+               placeholder="회원 이름을 입력하세요" onblur="nameValidation()">
+        <div id="name_validation_server" class="error-message" th:errors="*{memberName}"></div>
+        <div id="name_validation_browser" class="error-message"></div>
+      </div>
+
+      <div>
+        <input type="text" th:field="*{adminKey}" class="input" placeholder="관리자 등록을 위한 키를 입력하세요">
+        <div id="key_validation"></div>
+      </div>
+  
+      <div style="margin-top: 2em;">
+        <a onclick="checkAndSubmit()" class="button">등록</a>
+      </div>
+    </form>
+
+  </div>
+
+  <script th:inline="javascript">
+    function idValidation() {
+      let loginIdInput = document.getElementById("loginId");
+      let idValidationServer = document.getElementById("id_validation_server");
+      let idValidationBrowser = document.getElementById("id_validation_browser");
+
+      resetErrorMessage(loginIdInput, idValidationServer, idValidationBrowser);
+
+      if (loginIdInput.value.trim() == "") {
+        setErrorMessage(loginIdInput, idValidationBrowser, "로그인 ID는 필수입니다");
+      }
+
+      if (loginIdInput.value.length < 6 || 20 < loginIdInput.value.length) {
+        setErrorMessage(loginIdInput, idValidationBrowser, "로그인 ID의 길이는 6이상 20이하로 입력해주세요");
+      }
+
+      let pattern = /^[a-z0-9]{1,20}$/;
+      if (!pattern.test(loginIdInput.value)) {
+        setErrorMessage(loginIdInput, idValidationBrowser, "로그인 ID는 영어 소문자, 숫자로만 입력해주세요");
+      }
+
+      if (!loginIdInput.classList.contains('error-field')) {
+        $.ajax({
+          type: "get",
+          url: "/member/check?loginId=" + loginIdInput.value,
+          success: function (res) {
+            console.log("loginIdCount: " + res);
+            if (res > 0) {
+              setErrorMessage(loginIdInput, idValidationBrowser, "해당 로그인 ID는 이미 사용중입니다");
+            }
+          }
+        })
+      }
+    }
+
+    function passwordValidation() {
+      let loginPasswordInput = document.getElementById("loginPassword");
+      let passwordValidationServer = document.getElementById("password_validation_server");
+      let passwordValidationBrowser = document.getElementById("password_validation_browser");
+
+      resetErrorMessage(loginPasswordInput, passwordValidationServer, passwordValidationBrowser);
+
+      if (loginPasswordInput.value.trim() == "") {
+        setErrorMessage(loginPasswordInput, passwordValidationBrowser, "패스워드는 필수입니다");
+      }
+
+      if (loginPasswordInput.value.length < 6 || 20 < loginPasswordInput.value.length) {
+        setErrorMessage(loginPasswordInput, passwordValidationBrowser, "패스워드의 길이는 6이상 20이하로 입력해주세요");
+      }
+
+      let pattern = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[~!@#$%^&*?])[0-9a-zA-Z~!@#$%^&*?]{3,20}$/;
+      if (!pattern.test(loginPasswordInput.value)) {
+        setErrorMessage(loginPasswordInput, passwordValidationBrowser, "패스워드는 영문자, 숫자, 특수문자를 각각 1개 이상 포함해야 합니다");
+      }
+
+      let loginPassword2Input = document.getElementById("loginPassword2");
+      if (loginPassword2Input.value != "") {
+        passwordCheck();
+      }
+    }
+
+    function passwordCheck() {
+      let loginPasswordInput = document.getElementById("loginPassword");
+      let loginPassword2Input = document.getElementById("loginPassword2");
+      let passwordCheck = document.getElementById("password_check");
+
+      resetErrorMessage(loginPassword2Input, null, passwordCheck);
+
+      if (loginPasswordInput.value != loginPassword2Input.value) {
+        setErrorMessage(loginPassword2Input, passwordCheck, "입력한 패스워드와 일치하지 않습니다");
+      }
+    }
+
+    function nameValidation() {
+      let memberNameInput = document.getElementById("memberName");
+      let nameValidationServer = document.getElementById("name_validation_server");
+      let nameValidationBrowser = document.getElementById("name_validation_browser");
+
+      resetErrorMessage(memberNameInput, nameValidationServer, nameValidationBrowser);
+
+      if (memberNameInput.value.trim() == "") {
+        setErrorMessage(memberNameInput, nameValidationBrowser, "회원 이름은 필수입니다");
+      }
+
+      if (memberNameInput.value.length < 2 || 10 < memberNameInput.value.length) {
+        setErrorMessage(memberNameInput, nameValidationBrowser, "회원 이름의 길이는 2이상 10이하로 입력해주세요");
+      }
+
+      let pattern = /^[가-힣]{1,10}$/;
+      if (!pattern.test(memberNameInput.value)) {
+        setErrorMessage(memberNameInput, nameValidationBrowser, "회원 이름은 한글로 입력해주세요");
+      }
+    }
+
+    function resetErrorMessage(input, serverMessageDiv, browserMessageDiv) {
+      input.classList.remove('error-field');
+      if (serverMessageDiv != null) {
+        serverMessageDiv.innerHTML = "";
+      }
+      browserMessageDiv.innerHTML = "";
+    }
+
+    function setErrorMessage(input, browserMessageDiv, errorMessage) {
+      input.classList.add('error-field');
+      let div = document.createElement('div');
+      div.innerText = errorMessage;
+      browserMessageDiv.append(div);
+    }
+
+    function checkAndSubmit() {
+      idValidation();
+      passwordValidation();
+      passwordCheck();
+      nameValidation();
+
+      let inputs = document.getElementsByClassName('input');
+      let isNoError = true;
+      for (let input of inputs) {
+        if (input.classList.contains('error-field')) {
+          isNoError = false;
+          input.focus();
+          break;
+        }
+      }
+
+      if (isNoError) {
+        let memberSaveForm = document.getElementById("member-save-form");
+        memberSaveForm.submit();
+      }
+    }
+
+    </script>
+
+</body>
+</html>

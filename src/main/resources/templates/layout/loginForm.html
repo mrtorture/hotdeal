@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Member Login</title>
+
+  <style>
+    .container {
+      width: 40%;
+      margin: auto;
+    }
+
+    .header {
+      text-align: center;
+      margin: 4em auto 2em;
+    }
+    .header a {
+      display: inline-block;
+      text-decoration: none;
+      color: unset;
+      font-size: 2em;
+      font-weight: bold;
+    }
+
+    .field, button[type="submit"] {
+      padding: 0.5em;
+      font-size: inherit;
+      border: solid 1px #ccc;
+      width: 100%;
+      height: 3em;
+      box-sizing: border-box;
+    }
+    button[type="submit"] {
+      display:inline-block; 
+      padding: 0.5em 1em; 
+      border: none;
+      background-color: #666; 
+      color:white; 
+      font-size: inherit;
+      cursor: pointer;
+    }
+
+    .field:hover {
+      background-color: #eee;
+    }
+    .field:focus {
+      background-color: #eee;
+      outline: none;
+    }
+    button[type="submit"]:hover {
+      background-color: #555;
+    }
+
+    .error-field {
+      border: red 1px solid;
+    }
+    .error-message {
+      color: red;
+      font-size: 0.8em;
+    }
+
+  </style>
+
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <a href="/">Hot Deal Man</a>
+    </div>
+
+    <div>
+      <span style="font-weight: bold;">로그인</span>
+    </div>
+
+    <form th:action="@{/login(refererURL=${refererURL})}" method="post" th:object="${loginDTO}">
+      <div style="margin: 1.5em 0;">
+        <input type="text" class="field" th:field="*{loginId}" th:errorclass="error-field" placeholder="로그인 ID를 입력하세요">
+        <div id="id_validation" class="error-message" th:errors="*{loginId}"></div>
+      </div>
+  
+      <div style="margin: 1.5em 0;">
+        <input type="text" class="field" th:field="*{loginPassword}" th:errorclass="error-field" placeholder="로그인 패스워드를 입력하세요">
+        <div id="password_validation" class="error-message" th:errors="*{loginPassword}"></div>
+      </div>
+  
+      <div style="margin: 2em 0;">
+        <button type="submit">로그인</button>
+      </div>
+    </form>
+
+
+  </div>
+
+</body>
+</html>

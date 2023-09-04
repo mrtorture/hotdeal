@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <title>Hot Deal Man</title>
+
+  <style>
+    /* common elements */
+    .inline-block {
+      display: inline-block;
+    }
+    .float-container {
+      overflow: hidden;
+    }
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
+    .a-container a {
+      display: inline-block;
+      text-decoration: none;
+      color: unset;
+      cursor: pointer;
+    }
+    .submit {
+      display: inline-block;
+      border: none;
+      font-size: inherit; 
+      cursor: pointer;
+    }
+    .input {
+      padding: 0.5em;
+      font-size: inherit;
+      border: solid 1px #ccc;
+    }
+    .input:hover {
+      background-color: #eee;
+    }
+    .input:focus {
+      background-color: #eee;
+      outline: none;
+    }
+    .off {
+      display: none;
+    }
+    .on {
+      display: unset;
+    }
+
+    /* inner elements or conditions */
+    /* layout-header */
+    .container {
+      width: 80%;
+      margin: auto;
+    }
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background-color: #666;
+    }
+    .nav div {
+      margin: 0 0em;
+    }
+    .nav div > a {
+      padding: 0.5em 2em;
+      color: white;
+    }
+    .nav div > a:hover {
+      background-color: #555;
+    }
+
+    /* content */
+    .category, .create-date, .search {
+      padding: 1em 0 0 0;
+    }
+    .category > div, .create-date > div, .search > div {
+      display: inline-block;
+      padding: 0.5em;
+    }
+
+    .contents th, .contents td {
+      height: 2em;
+      padding: 0.5em;
+      border-bottom: solid 1px #ccc;
+      text-align: center;
+    }
+    .contents td {
+      overflow: hidden;
+    }
+    .contents td:nth-child(3) {
+      text-align: left;
+    }
+    .contents tbody tr:hover {
+      background-color: #eee;
+    }
+    .contents td img {
+      float: left;
+      box-sizing: border-box;
+      width: 23%;
+      height: 9em; /*이후 수정*/
+      object-fit: cover;
+      object-position: 50% 0%;
+    }
+    .contents td > div {
+      float: left;
+      position: relative;
+      padding: 0 1em;
+      box-sizing: border-box;
+      width: 77%;
+      height: 100%;
+    }
+    .contents td > div > div {
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%);
+    }
+    .contents td > div > div > span:nth-child(2) {
+      color: tomato;
+    }
+    .paging div {
+      float: left;
+    }
+    .paging a {
+      margin: 0.2em;
+      width: 2em;
+      height: 2em;
+      text-align: center;
+      line-height: 2em;
+    }
+    .paging .cursor {
+      font-weight: bold;
+      opacity: 0.5;
+      cursor: unset;
+    }
+    .paging .clickable:hover {
+      background-color: #eee;
+    }
+    .paging .noclickable {
+      opacity: 0.5;
+      cursor: unset;
+    }
+
+    /* layout-footer */
+    .info {
+      border-top: solid 2px #666;
+      border-bottom: solid 1px #666;
+    }
+    .info a {
+      margin: 1em 1em;
+    }
+    .footer {
+      overflow: hidden;
+    }
+    .footer > div {
+      width: 50%;
+      box-sizing: border-box;
+      padding: 2em;
+    }
+    .footer div div {
+      opacity: 0.7;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="float-container a-container" style="margin: 2em 0;">
+      <div class="left"><a href="/" style="font-size: 2em; font-weight: bold;">Hot Deal Man</a></div>
+      <div th:if="${session.memberSessionDTO} == null" class="right" style="line-height: 3em;">
+        <a href="/member/new">회원가입</a></div>
+      <div th:if="${session.memberSessionDTO} == null" class="right" style="margin: 0 1em; line-height: 3em;">
+        <a th:href="@{/login(refererURL=${refererURL})}">로그인</a></div>
+      <div th:unless="${session.memberSessionDTO} == null" class="right" style="margin: 0 1em; line-height: 3em;">
+        <a th:href="@{/logout(refererURL=${refererURL})}">로그아웃</a></div>
+      <div th:unless="${session.memberSessionDTO} == null" class="right" style="line-height: 3em;">
+        <a href="#"><span th:text="${session.memberSessionDTO.memberName}" style="font-weight: bold;"></span>님</a></div>
+    </div>
+
+    <div class="nav float-container a-container">
+      <div class="left"><a href="/" th:attrappend="style = ${postPreviewParams.board == 'list' and postPreviewParams.orderBy.description == 'DATE' ? ' background: #444' : ''}">최신순</a></div>
+      <div class="left"><a href="/posts/list?orderBy=VOTE" th:attrappend="style = ${postPreviewParams.board == 'list' and postPreviewParams.orderBy.description == 'VOTE' ? ' background: #444' : ''}">추천순</a></div>
+      <div class="left"><a href="/posts/wish" th:attrappend="style = ${postPreviewParams.board == 'wish' ? ' background: #444' : ''}">찜목록</a></div>
+      <div class="left"><a href="/posts/my" th:attrappend="style = ${postPreviewParams.board == 'my' ? ' background: #444' : ''}">작성글</a></div>
+      <div class="right"><a onclick="document.getElementById('search-box').classList.toggle('on')"
+                            th:attrappend="style = ${postPreviewParams.board == 'search' ? ' background: #444' : ''}">검색</a></div>
+      <div id="search-box" class="right off">
+        <form action="/posts/search" id="search-form">
+          <input type="text" id="search-input" name="keyword" class="input"
+                 style="width: 15em; height: 1.4em; padding: 0.2em 2em 0.2em 0.2em; font-size: 0.9em;position: absolute; top: 50%; right: 7em; transform: translate(0, -50%)">
+          <a onclick="checkAndSearch(document.getElementById('search-input'), document.getElementById('search-form'))"
+             style="position: absolute; top: 50%; right: 6.4em; transform: translate(0, -50%); width: 1.5em; height: 1.5em; padding: 0;">
+            <img src="/search.png" style="width: 70%; height: 70%; padding: 15%; opacity: 0.5;" alt="">
+          </a>
+        </form>
+      </div>
+    </div>
+
+    <form th:if="(${postPreviewParams.board} == 'list') and (${postPreviewParams.orderBy.description} == 'DATE')" action id="category-form">
+      <div class="category">
+        <div>
+          <input type="checkbox" id="food" th:field="${postPreviewParams.category}" value="FOOD"
+                 onclick="doCategoryFilter(document.getElementById('category-form'))">
+          <label for="food">식품</label>
+        </div>
+        <div>
+          <input type="checkbox" id="computer" th:field="${postPreviewParams.category}" value="COMPUTER"
+                 onclick="doCategoryFilter(document.getElementById('category-form'))">
+          <label for="computer">컴퓨터</label>
+        </div>
+        <div>
+          <input type="checkbox" id="gift_card" th:field="${postPreviewParams.category}" value="GIFT_CARD"
+                 onclick="doCategoryFilter(document.getElementById('category-form'))">
+          <label for="gift_card">상품권</label>
+        </div>
+        <div>
+          <input type="checkbox" id="game" th:field="${postPreviewParams.category}" value="GAME"
+                 onclick="doCategoryFilter(document.getElementById('category-form'))">
+          <label for="game">게임</label>
+        </div>
+        <div>
+          <input type="checkbox" id="electronics" th:field="${postPreviewParams.category}" value="ELECTRONICS"
+                 onclick="doCategoryFilter(document.getElementById('category-form'))">
+          <label for="electronics">가전</label>
+        </div>
+        <div>
+          <input type="checkbox" id="clothing" th:field="${postPreviewParams.category}" value="CLOTHING"
+                 onclick="doCategoryFilter(document.getElementById('category-form'))">
+          <label for="clothing">의류</label>
+        </div>
+        <div>
+          <input type="checkbox" id="others" th:field="${postPreviewParams.category}" value="OTHERS"
+                 onclick="doCategoryFilter(document.getElementById('category-form'))">
+          <label for="others">기타</label>
+        </div>
+      </div>
+    </form>
+
+    <form th:if="(${postPreviewParams.board} == 'list') and (${postPreviewParams.orderBy.description} == 'VOTE')" action id="create-date-form">
+      <div class="create-date">
+        <div>
+          <input type="checkbox" id="1day" th:field="${postPreviewParams.createDate}" class="create-date-input" value="1DAY"
+                 onclick="doDateFilter(document.getElementById('1day'), document.getElementsByClassName('create-date-input'), document.getElementById('create-date-form'))">
+          <label for="1day">최근 1일</label>
+        </div>
+        <div>
+          <input type="checkbox" id="2day" th:field="${postPreviewParams.createDate}" class="create-date-input" value="2DAY"
+                 onclick="doDateFilter(document.getElementById('2day'), document.getElementsByClassName('create-date-input'), document.getElementById('create-date-form'))">
+          <label for="2day">최근 2일</label>
+        </div>
+        <div>
+          <input type="checkbox" id="7day" th:field="${postPreviewParams.createDate}" class="create-date-input" value="7DAY"
+                 onclick="doDateFilter(document.getElementById('7day'), document.getElementsByClassName('create-date-input'), document.getElementById('create-date-form'))">
+          <label for="7day">최근 일주일</label>
+        </div>
+      </div>
+    </form>
+
+    <div th:if="(${postPreviewParams.board} == 'search') and (${postPreviewParams.keyword != null})">
+      <div class="search">
+        <div>
+          <span th:text="${postPreviewParams.keyword}" style="color: dodgerblue;"></span>&nbsp;키워드 검색 결과
+        </div>
+      </div>
+    </div>
+
+    <div class="contents">
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="width: 9%;">시간</th>
+            <th style="width: 9%;">카테고리</th>
+            <th style="width: 61%;">제목</th>
+            <th style="width: 11%;">가격</th>
+            <th style="width: 5%;">추천</th>
+            <th style="width: 5%;">조회</th>
+          </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="postPreview : ${postPreviewDTOList}">
+          <td>방금</td>
+          <td class="categoryValue" th:text="${postPreview.category}">컴퓨터</td>
+          <td>
+            <a th:href="@{/posts/{postId}(postId=${postPreview.postId}, board=${postPreviewParams.board},
+            orderBy=${postPreviewParams.orderBy}, category=${postPreviewParams.category}, createDate=${postPreviewParams.createDate}, keyword=${postPreviewParams.keyword},
+            pageNumber=${postPreviewParams.pageNumber})}" style="cursor: pointer;">
+              <img src="/xbox_controller.png" alt="xbox_controller" th:src="@{|/upload/${postPreview.thumbnail}|}">
+            </a>
+            <div>
+              <div class="a-container">
+                <a th:href="@{/posts/{postId}(postId=${postPreview.postId}, board=${postPreviewParams.board},
+                orderBy=${postPreviewParams.orderBy}, category=${postPreviewParams.category}, createDate=${postPreviewParams.createDate}, keyword=${postPreviewParams.keyword},
+                pageNumber=${postPreviewParams.pageNumber})}" style="cursor: pointer;">
+                  <span class="to_search" th:text="${postPreview.title}">Xbox 무선 컨트롤러 4세대</span>
+                </a>
+                <span th:if="${postPreview.commentsCount} > 0" th:text="|[${postPreview.commentsCount}]|"></span>
+              </div>
+            </div>
+          </td>
+          <td class="priceValue" th:text="${postPreview.price}">52240</td>
+          <td th:text="${postPreview.votesCount}">1</td>
+          <td th:text="${postPreview.hit}">10</td>
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+    <div class="float-container" style="margin: 2em 0 3em 0; position: relative; text-align: center;">
+      <div th:unless="${session.memberSessionDTO} == null" class="a-container" style="position: absolute; right: 0;">
+        <a href="/posts/new" style="padding: 0.5em 1em; background-color: #666; color:white; ">글쓰기</a>
+      </div>
+
+      <div class="paging inline-block float-container a-container">
+        <div th:if="${pagingDTO.hasPrev}">
+          <a th:href="@{/posts/{board}(board=${postPreviewParams.board},
+          orderBy=${postPreviewParams.orderBy}, category=${postPreviewParams.category}, createDate=${postPreviewParams.createDate}, keyword=${postPreviewParams.keyword},
+          pageNumber=${pagingDTO.startPage - 1})}"
+             th:classappend="clickable">&lt;</a>
+        </div>
+        <div th:unless="${pagingDTO.hasPrev}">
+          <a th:classappend="noclickable">&lt;</a>
+        </div>
+
+        <div th:each="page : ${#numbers.sequence(pagingDTO.startPage, pagingDTO.endPage)}">
+          <a th:if="${page == pagingDTO.pageNumber}" th:text="${page}" th:classappend="cursor"></a>
+          <a th:unless="${page == pagingDTO.pageNumber}"
+             th:href="@{/posts/{board}(board=${postPreviewParams.board},
+             orderBy=${postPreviewParams.orderBy}, category=${postPreviewParams.category}, createDate=${postPreviewParams.createDate}, keyword=${postPreviewParams.keyword},
+             pageNumber=${page})}"
+             th:text="${page}" th:classappend="clickable"></a>
+        </div>
+
+        <div th:if="${pagingDTO.hasNext}">
+          <a th:href="@{/posts/{board}(board=${postPreviewParams.board},
+          orderBy=${postPreviewParams.orderBy}, category=${postPreviewParams.category}, createDate=${postPreviewParams.createDate}, keyword=${postPreviewParams.keyword},
+          pageNumber=${pagingDTO.endPage + 1})}"
+             th:classappend="clickable">&gt;</a>
+        </div>
+        <div th:unless="${pagingDTO.hasNext}">
+          <a th:classappend="noclickable">&gt;</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="info a-container">
+      <a href="#">사이트소개</a>
+      <a href="#">공지사항</a>
+      <a href="#">이용약관</a>
+      <a href="#">고객의소리</a>
+      <a href="#">메일문의</a>
+    </div>
+    <div class="footer">
+      <div class="left">
+        <div style="font-weight: bold; padding: 0.5em 0;">주식회사 핫딜맨</div>
+        <div>경기 하남시 감일백제로 65</div>
+        <div>사업자등록번호: 120-88-12345</div>
+        <div>대표이사: 윤주호</div>
+      </div>
+      <div class="left">
+        <div style="font-weight: bold; padding: 0.5em 0;">고객센터</div>
+        <div>Tel: 010-6484-5974</div>
+        <div>Fax: 02-404-5974</div>
+        <div>Email: joejoeya@gmail.com</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script th:inline="javascript">
+    let categoryElements = document.getElementsByClassName("categoryValue");
+    for (let element of categoryElements) {
+      element.innerText = getCategory(element.innerText);
+    }
+
+    let priceElements = document.getElementsByClassName("priceValue");
+    for (let element of priceElements) {
+      element.innerText = getPrice(element.innerText);
+    }
+
+    highlightSearchTerms();
+
+    function getCategory(str) {
+      switch (str) {
+        case "FOOD":
+          return "식품";
+        case "COMPUTER":
+          return "컴퓨터";
+        case "ELECTRONICS":
+          return "가전";
+        case "GAME":
+          return "게임";
+        case "CLOTHING":
+          return "의류";
+        case "GIFT_CARD":
+          return "상품권";
+        case "OTHERS":
+          return "기타";
+        default:
+          return str;
+      }
+    }
+
+    function getPrice(str) {
+      if (str == null) {
+        return null;
+      }
+
+      let price = parseInt(str);
+
+      return numberWithCommas(price) + "원";
+    }
+
+    function numberWithCommas(int) {
+      if (int < 1000) {
+        return int;
+      }
+
+      let quotient = Math.floor(int / 1000);
+      let remainder = int % 1000;
+
+      if (remainder < 10) {
+        remainder = "00" + remainder.toString();
+      } else if (remainder < 100) {
+        remainder = "0" + remainder.toString();
+      }
+
+      return numberWithCommas(quotient).toString() + "," + remainder;
+    }
+
+    function doCategoryFilter(formElement) {
+      formElement.submit();
+    }
+
+    function doDateFilter(inputElement, inputElements, formElement) {
+      let isChecked = inputElement.checked;
+      for (let input of inputElements) {
+        input.checked = false;
+      }
+      if (isChecked == true) {
+        inputElement.checked = true;
+      }
+
+      let hiddenInput = document.createElement('input');
+      hiddenInput.type = 'hidden';
+      hiddenInput.name = 'orderBy';
+      hiddenInput.value = 'VOTE';
+      formElement.append(hiddenInput);
+      formElement.submit();
+
+    }
+
+    function checkAndSearch(inputElement, formElement) {
+      if (inputElement.value.trim().length > 1) {
+        formElement.submit();
+      }
+    }
+
+    function highlightSearchTerms() {
+      let board = [[${postPreviewParams.board}]];
+      let keyword = [[${postPreviewParams.keyword}]];
+
+      console.log("board: ", board);
+      console.log("keyword: ", keyword);
+
+      if (board === "search" && keyword !== null) {
+        let toSearchList = document.getElementsByClassName("to_search");
+        let searchTerms = keyword.split(" ");
+        for (let toSearch of toSearchList) {
+          for (let searchTerm of searchTerms) {
+            let pattern = new RegExp(searchTerm, "g");
+            let text = toSearch.innerHTML;
+            let newText = text.replace(pattern, `<span style="color: dodgerblue;">${searchTerm}</span>`);
+            toSearch.innerHTML = newText;
+          }
+        }
+      }
+    }
+
+  </script>
+
+</body>
+</html>

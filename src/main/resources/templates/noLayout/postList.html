@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hot Deal List</title>
+
+  <style>
+    /* common elements */
+    .inline-block {
+      display: inline-block;
+    }
+    .float-container {
+      overflow: hidden;
+    }
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
+    .a-container a {
+      display: inline-block;
+      text-decoration: none;
+      color: unset;
+    }
+    .submit {
+      display: inline-block;
+      border: none;
+      font-size: inherit; 
+      cursor: pointer;
+    }
+    .input {
+      padding: 0.5em;
+      font-size: inherit;
+      border: solid 1px #ccc;
+    }
+    .input:hover {
+      background-color: #eee;
+    }
+    .input:focus {
+      background-color: #eee;
+      outline: none;
+    }
+
+    /* inner elements or conditions */
+    /* layout-header */
+    .container {
+      width: 80%;
+      margin: auto;
+    }
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background-color: #666;
+    }
+    .nav div {
+      margin: 0 1em;
+    }
+    .nav div a {
+      padding: 0.5em 1em;
+      color: white;
+    }
+
+    /* content */
+    .category { /*이후 수정*/
+      padding: 1em 0 0 0;
+    }
+    .category > div {
+      display: inline-block;
+      padding: 0.5em;
+    }
+    .contents th, .contents td {
+      height: 2em;
+      padding: 0.5em;
+      border-bottom: solid 1px #ccc;
+      text-align: center;
+    }
+    .contents td {
+      overflow: hidden;
+    }
+    .contents td:nth-child(3) {
+      text-align: left;
+    }
+    .contents tbody tr:hover {
+      background-color: #eee;
+    }
+    .contents td img {
+      float: left;
+      box-sizing: border-box;
+      width: 23%;
+      height: 9em; /*이후 수정*/
+      object-fit: cover;
+      object-position: 50% 0%;
+    }
+    .contents td > div {
+      float: left;
+      position: relative;
+      padding: 0 1em;
+      box-sizing: border-box;
+      width: 77%;
+      height: 100%;
+    }
+    .contents td > div > div {
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%);
+    }
+    .paging {
+      width: 29em; 
+      margin: auto;
+    }
+    .paging a {
+      float: left;
+      margin: 0.2em;
+      width: 2em;
+      height: 2em;
+      text-align: center;
+      line-height: 2em;
+    }
+    .paging .cursor {
+      font-weight: bold;
+      opacity: 0.5;
+    }
+    .paging .clickable:hover {
+      background-color: #eee;
+    }
+    .paging .noclickable {
+      opacity: 0.5;
+    }
+
+    /* layout-footer */
+    .info {
+      border-top: solid 2px #666;
+      border-bottom: solid 1px #666;
+    }
+    .info a {
+      margin: 1em 1em;
+    }
+    .footer {
+      overflow: hidden;
+    }
+    .footer > div {
+      width: 50%;
+      box-sizing: border-box;
+      padding: 2em;
+    }
+    .footer div div {
+      opacity: 0.7;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="float-container a-container" style="margin: 2em 0;">
+      <div class="left"><a href="/" style="font-size: 2em; font-weight: bold;">Hot Deal Man</a></div>
+      <div th:if="${session.memberSessionDTO} == null" class="right" style="line-height: 3em;">
+        <a href="/member/new">회원가입</a></div>
+      <div th:if="${session.memberSessionDTO} == null" class="right" style="margin: 0 1em; line-height: 3em;">
+        <a th:href="@{/login(refererURL=${refererURL})}">로그인</a></div>
+      <div th:unless="${session.memberSessionDTO} == null" class="right" style="line-height: 3em;">
+        <a href="#"><span th:text="${session.memberSessionDTO.loginId}"></span>님 설정</a></div>
+      <div th:unless="${session.memberSessionDTO} == null" class="right" style="margin: 0 1em; line-height: 3em;">
+        <a th:href="@{/logout(refererURL=${refererURL})}">로그아웃</a></div>
+    </div>
+
+    <div class="nav float-container a-container">
+      <div class="left"><a href="#">최신순</a></div>
+      <div class="left"><a href="#">추천순</a></div>
+      <div class="left"><a href="#">관심목록</a></div>
+      <div class="left"><a href="#">내가쓴글</a></div>
+      <div class="right"><a href="#">검색</a></div>
+    </div>
+
+    <div class="category">
+      <div>
+        <input type="checkbox" id="food">
+        <label for="food">식품</label>
+      </div>
+      <div>
+        <input type="checkbox" id="computer">
+        <label for="computer">컴퓨터</label>
+      </div>
+      <div>
+        <input type="checkbox" id="gift_card">
+        <label for="gift_card">상품권</label>
+      </div>
+      <div>
+        <input type="checkbox" id="game">
+        <label for="game">게임</label>
+      </div>
+      <div>
+        <input type="checkbox" id="electronics">
+        <label for="electronics">가전</label>
+      </div>
+      <div>
+        <input type="checkbox" id="clothing">
+        <label for="clothing">의류</label>
+      </div>
+      <div>
+        <input type="checkbox" id="others">
+        <label for="others">기타</label>
+      </div>
+    </div>
+
+    <div class="contents">
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="width: 9%;">시간</th>
+            <th style="width: 9%;">카테고리</th>
+            <th style="width: 62%;">제목</th>
+            <th style="width: 10%;">가격</th>
+            <th style="width: 5%;">추천</th>
+            <th style="width: 5%;">조회</th>
+          </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="postPreview : ${postPreviewDTOList}">
+          <td>방금</td>
+          <td class="categoryValue" th:text="${postPreview.category}">컴퓨터</td>
+          <td>
+            <img src="/xbox_controller.png" alt="xbox_controller"
+                 th:src="@{|/upload/${postPreview.thumbnail}|}"
+                 th:onclick="|location.href='/posts/${postPreview.postId}?pageNumber=${pagingDTO.pageNumber}'|" style="cursor: pointer;">
+            <div>
+              <div th:text="${postPreview.title}"
+                   th:onclick="|location.href='/posts/${postPreview.postId}?pageNumber=${pagingDTO.pageNumber}'|" style="cursor: pointer;">
+                Xbox 무선 컨트롤러 4세대
+              </div>
+            </div>
+          </td>
+          <td class="priceValue" th:text="${postPreview.price}">52240</td>
+          <td th:text="${postPreview.vote}">1</td>
+          <td th:text="${postPreview.hit}">10</td>
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+    <div class="float-container" style="margin: 2em 0 3em 0; position: relative;">
+      <div th:unless="${session.memberSessionDTO} == null" class="a-container" style="position: absolute; right: 0;">
+        <a href="/posts/new" style="padding: 0.5em 1em; background-color: #666; color:white; ">글쓰기</a>
+      </div>
+
+      <div class="paging float-container a-container">
+        <div th:if="${pagingDTO.hasPrev}">
+          <a th:href="@{/posts(pageNumber=${pagingDTO.startPage - 1})}" th:classappend="clickable">&lt;</a>
+        </div>
+        <div th:unless="${pagingDTO.hasPrev}">
+          <a th:classappend="noclickable">&lt;</a>
+        </div>
+
+        <div th:each="page : ${#numbers.sequence(pagingDTO.startPage, pagingDTO.endPage)}">
+          <a th:if="${page == pagingDTO.pageNumber}" th:text="${page}" th:classappend="cursor"></a>
+          <a th:unless="${page == pagingDTO.pageNumber}" th:href="@{/posts(pageNumber=${page})}" th:text="${page}" th:classappend="clickable"></a>
+        </div>
+
+        <div th:if="${pagingDTO.hasNext}">
+          <a th:href="@{/posts(pageNumber=${pagingDTO.endPage + 1})}" th:classappend="clickable">&gt;</a>
+        </div>
+        <div th:unless="${pagingDTO.hasNext}">
+          <a th:classappend="noclickable">&gt;</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="info a-container">
+      <a href="#">사이트소개</a>
+      <a href="#">공지사항</a>
+      <a href="#">이용약관</a>
+      <a href="#">고객의소리</a>
+      <a href="#">메일문의</a>
+    </div>
+    <div class="footer">
+      <div class="left">
+        <div style="font-weight: bold; padding: 0.5em 0;">주식회사 핫딜맨</div>
+        <div>경기 하남시 감일백제로 65</div>
+        <div>사업자등록번호: 120-88-12345</div>
+        <div>대표이사: 윤주호</div>
+      </div>
+      <div class="left">
+        <div style="font-weight: bold; padding: 0.5em 0;">고객센터</div>
+        <div>Tel: 010-6484-5974</div>
+        <div>Fax: 02-404-5974</div>
+        <div>Email: joejoeya@gmail.com</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let categoryElements = document.getElementsByClassName("categoryValue");
+    for (let element of categoryElements) {
+      element.innerText = setCategory(element.innerText);
+    }
+
+    let priceElements = document.getElementsByClassName("priceValue");
+    for (let element of priceElements) {
+      element.innerText = setPrice(element.innerText);
+    }
+
+    function setCategory(cat) {
+      switch (cat) {
+        case "FOOD":
+          return "식품";
+        case "COMPUTER":
+          return "컴퓨터";
+        case "ELECTRONICS":
+          return "가전";
+        case "GAME":
+          return "게임";
+        case "CLOTHING":
+          return "의류";
+        case "GIFT_CARD":
+          return "상품권";
+        case "OTHERS":
+          return "기타";
+        default:
+          return cat;
+      }
+    }
+
+    function setPrice(str) {
+      if (str == null) {
+        return null;
+      }
+
+      let price = parseInt(str);
+
+      return numberWithCommas(price) + "원";
+    }
+
+    function numberWithCommas(int) {
+      if (int < 1000) {
+        return int;
+      }
+
+      let quotient = Math.floor(int / 1000);
+      let remainder = int % 1000;
+
+      if (remainder < 10) {
+        remainder = "00" + remainder.toString();
+      } else if (remainder < 100) {
+        remainder = "0" + remainder.toString();
+      }
+
+      return numberWithCommas(quotient).toString() + "," + remainder;
+    }
+
+  </script>
+
+</body>
+</html>

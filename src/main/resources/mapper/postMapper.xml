@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="toyproject.hotdeal.dao.PostMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="postId">
+        INSERT INTO post(member_id, create_date, category, title, price, link, post_content, hit)
+        VALUES(#{memberId}, NOW(), #{category}, #{title}, #{price}, #{link}, #{postContent}, 0)
+    </insert>
+
+    <select id="findByPostId" resultType="PostDTO">
+        SELECT post_id, member_id, category, title, price, link, post_content, hit, create_date
+        FROM post
+        WHERE post_id = #{postId}
+    </select>
+    <select id="findPage" resultType="PostDTO">
+        SELECT post_id, member_id, category, title, price, link, post_content, hit, create_date
+        FROM post NATURAL JOIN
+        <if test="orderBy.getDescription() == 'DATE'">
+            (SELECT post_id FROM post
+            <if test="category != null">
+                <where>
+                    <if test="category.contains('FOOD')">
+                        category = 'FOOD'
+                    </if>
+                    <if test="category.contains('COMPUTER')">
+                        OR category = 'COMPUTER'
+                    </if>
+                    <if test="category.contains('GIFT_CARD')">
+                        OR category = 'GIFT_CARD'
+                    </if>
+                    <if test="category.contains('GAME')">
+                        OR category = 'GAME'
+                    </if>
+                    <if test="category.contains('ELECTRONICS')">
+                        OR category = 'ELECTRONICS'
+                    </if>
+                    <if test="category.contains('CLOTHING')">
+                        OR category = 'CLOTHING'
+                    </if>
+                    <if test="category.contains('OTHERS')">
+                        OR category = 'OTHERS'
+                    </if>
+                </where>
+            </if>
+            <if test="memberId != null">
+                WHERE member_id = #{memberId}
+            </if>
+            <if test="searchTokens != null">
+                <where>
+                    <foreach collection="searchTokens" item="token" open="MATCH(title) AGAINST(&apos;" separator=" " close="&apos; IN BOOLEAN MODE)">
+                        +"${token}"
+                    </foreach>
+                </where>
+            </if>
+            ORDER BY post_id DESC LIMIT #{pageSize} OFFSET #{offset}) AS tmp
+        </if>
+        <if test="orderBy.getDescription() == 'VOTE'">
+            (SELECT post_id FROM votes_count
+            <if test="createDate != null">
+                <where>
+                    <choose>
+                        <when test="createDate.contains('1DAY')">
+                            create_date >= NOW() - INTERVAL 1 DAY
+                        </when>
+                        <when test="createDate.contains('2DAY')">
+                            create_date >= NOW() - INTERVAL 2 DAY
+                        </when>
+                        <when test="createDate.contains('7DAY')">
+                            create_date >= NOW() - INTERVAL 7 DAY
+                        </when>
+                    </choose>
+                </where>
+            </if>
+            ORDER BY votes_count DESC LIMIT #{pageSize} OFFSET #{offset}) AS tmp
+        </if>
+
+    </select>
+    <select id="countPosts">
+        SELECT COUNT(post_id)
+        FROM post
+        <if test="category != null">
+            <where>
+                <if test="category.contains('FOOD')">
+                    category = 'FOOD'
+                </if>
+                <if test="category.contains('COMPUTER')">
+                    OR category = 'COMPUTER'
+                </if>
+                <if test="category.contains('GIFT_CARD')">
+                    OR category = 'GIFT_CARD'
+                </if>
+                <if test="category.contains('GAME')">
+                    OR category = 'GAME'
+                </if>
+                <if test="category.contains('ELECTRONICS')">
+                    OR category = 'ELECTRONICS'
+                </if>
+                <if test="category.contains('CLOTHING')">
+                    OR category = 'CLOTHING'
+                </if>
+                <if test="category.contains('OTHERS')">
+                    OR category = 'OTHERS'
+                </if>
+            </where>
+        </if>
+        <if test="createDate != null">
+            <where>
+                <choose>
+                    <when test="createDate.contains('1DAY')">
+                        create_date >= NOW() - INTERVAL 1 DAY
+                    </when>
+                    <when test="createDate.contains('2DAY')">
+                        create_date >= NOW() - INTERVAL 2 DAY
+                    </when>
+                    <when test="createDate.contains('7DAY')">
+                        create_date >= NOW() - INTERVAL 7 DAY
+                    </when>
+                </choose>
+            </where>
+        </if>
+        <if test="memberId != null">
+            WHERE member_id = #{memberId}
+        </if>
+        <if test="searchTokens != null">
+            <where>
+                <foreach collection="searchTokens" item="token" open="MATCH(title) AGAINST(&apos;" separator=" " close="&apos; IN BOOLEAN MODE)">
+                    +"${token}"
+                </foreach>
+            </where>
+        </if>
+    </select>
+    <select id="findByMemberId" resultType="PostDTO">
+        SELECT post_id, member_id, category, title, price, link, post_content, hit, create_date
+        FROM post
+        WHERE member_id = #{memberId}
+    </select>
+    <select id="findPageByCategory" resultType="PostDTO">
+        SELECT post_id, member_id, category, title, price, link, post_content, hit, create_date
+        FROM post NATURAL JOIN
+            (SELECT post_id FROM post WHERE category = #{param3} ORDER BY post_id DESC LIMIT #{param1} OFFSET #{param2}) AS tmp
+    </select>
+    <select id="findMemberId">
+        SELECT member_id
+        FROM post
+        WHERE post_id = #{postId}
+    </select>
+
+    <delete id="delete">
+        DELETE FROM post
+        WHERE post_id = #{postId}
+    </delete>
+
+    <update id="update">
+        UPDATE post
+        SET category = #{category}, title = #{title}, price = #{price}, link = #{link}, post_content = #{postContent}
+        WHERE post_id = #{postId}
+    </update>
+    <update id="increaseHit">
+        UPDATE post
+        SET hit = hit + 1
+        WHERE post_id = #{postId}
+    </update>
+
+
+</mapper>

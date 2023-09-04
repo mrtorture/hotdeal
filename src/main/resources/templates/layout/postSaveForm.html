@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head(~{::title}, ~{::style})">
+  <title>Hot Deal Posting</title>
+
+  <style>
+
+    .field {
+      padding: 0.5em;
+      font-size: inherit;
+      border: solid 1px #ccc;
+    }
+    .field:hover {
+      background-color: #eee;
+    }
+    .field:focus {
+      background-color: #eee;
+      outline: none;
+    }
+    input[type="file"]::file-selector-button {
+      display: none;
+    }
+    label[for="fileName"]:hover {
+      background-color: #eee;
+    }
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
+    .error-field {
+      border: red 1px solid;
+    }
+    .error-message {
+      color: red;
+      font-size: 0.8em;
+    }
+
+  </style>
+</head>
+
+<body th:replace="layout :: body(~{::form}, ~{::script})">
+  <form action method="post" th:object="${postSaveDTO}" enctype="multipart/form-data">
+    <div style="padding: 1em 0; border-bottom: solid 1px #666;">
+      <span style="font-size: 1.2em; font-weight: bold;">핫딜 글쓰기</span>
+    </div>
+
+    <div style="margin: 1.5em 0;">
+      <select th:field="*{category}" class="field">
+        <option value="FOOD">식품</option>
+        <option value="COMPUTER">컴퓨터</option>
+        <option value="GAME">게임</option>
+        <option value="ELECTRONICS">가전</option>
+        <option value="CLOTHING">의류</option>
+        <option value="GIFT_CARD">상품권</option>
+        <option value="OTHERS">기타</option>
+      </select>
+    </div>
+
+    <div style="margin: 1.5em 0; overflow:hidden;">
+      <input type="text" th:field="*{title}" th:errorclass="error-field"
+             class="left field" style="width: 75%; box-sizing: border-box;" placeholder="제목을 입력하세요">
+      <input type="text" th:field="*{price}" th:errorclass="error-field"
+             class="right field" style="width: 24%; box-sizing: border-box;" placeholder="가격을 입력하세요">
+      <div th:errors="*{title}" class="error-message"></div>
+      <div th:errors="*{price}" class="error-message"></div>
+    </div>
+
+    <div style="margin: 1.5em 0;">
+      <input type="text" th:field="*{link}" class="field"
+             style="width: 100%; box-sizing: border-box;" placeholder="링크를 입력하세요">
+    </div>
+    <div style="margin: 1.5em 0;">
+      <textarea th:field="*{content}" class="field"
+                style="width: 100%; height: 20em; box-sizing: border-box; resize: none; font: inherit;" placeholder="내용을 입력하세요"></textarea>
+    </div>
+    <div style="margin: 1.5em 0;">
+      <label for="imageFile" id="fileSelectButton"
+             style="border: solid 1px #ccc; padding: 0.5em; color: rgba(0, 0, 0, 0.6)"
+             onmouseover="buttonBackgroundOn()" onmouseleave="buttonBackgroundOff()">썸네일 선택</label>
+      <input type="file" th:field="*{imageFile}" id="imageFile" style="width: 15em;" accept="image/*"
+             onmouseover="buttonBackgroundOn()" onmouseleave="buttonBackgroundOff()">
+    </div>
+    <div style="margin: 2em 0 4em 0;">
+      <button type="submit" style="display:inline-block; padding: 0.5em 1em; border: none;
+            background-color: #666; color:white; font-size: inherit; cursor: pointer;">등록</button>
+    </div>
+  </form>
+
+  <script>
+    function buttonBackgroundOn() {
+      document.getElementById("fileSelectButton").style.backgroundColor = "#eee";
+    }
+
+    function buttonBackgroundOff() {
+      document.getElementById("fileSelectButton").style.backgroundColor = "#fff";
+    }
+
+  </script>
+</body>
+</html>

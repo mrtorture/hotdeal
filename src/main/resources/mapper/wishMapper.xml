@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="toyproject.hotdeal.dao.WishMapper">
+    <select id="findByPostIdMemberId">
+        SELECT COUNT(post_id)
+        FROM wish
+        WHERE post_id = #{param1} AND member_id = #{param2}
+    </select>
+    <select id="findByMemberId" resultType="PostDTO">
+        SELECT post_id, member_id, category, title, price, link, post_content, hit, create_date
+        FROM post NATURAL JOIN
+            (SELECT post_id FROM wish WHERE member_id = #{param1} ORDER BY post_id DESC LIMIT #{param2} OFFSET #{param3}) AS tmp
+    </select>
+    <select id="count">
+        SELECT COUNT(post_id)
+        FROM wish
+        WHERE member_id = #{memberId}
+    </select>
+
+    <insert id="save">
+        INSERT INTO wish(post_id, member_id)
+        VALUES(#{postId}, #{memberId})
+    </insert>
+    <delete id="delete">
+        DELETE FROM wish
+        WHERE post_id = #{param1} AND member_id = #{param2}
+    </delete>
+</mapper>
