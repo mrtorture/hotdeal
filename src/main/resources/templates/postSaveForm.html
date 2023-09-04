@@ -24,6 +24,7 @@
       display: inline-block;
       text-decoration: none;
       color: unset;
+      cursor: pointer;
     }
     .submit {
       display: inline-block;
@@ -43,6 +44,12 @@
       background-color: #eee;
       outline: none;
     }
+    .off {
+      display: none;
+    }
+    .on {
+      display: unset;
+    }
 
     /* inner elements or conditions */
     /* layout-header */
@@ -57,11 +64,14 @@
       background-color: #666;
     }
     .nav div {
-      margin: 0 1em;
+      margin: 0 0em;
     }
-    .nav div a {
-      padding: 0.5em 1em;
+    .nav div > a {
+      padding: 0.5em 2em;
       color: white;
+    }
+    .nav div > a:hover {
+      background-color: #555;
     }
 
     /* content */
@@ -116,8 +126,18 @@
       <div class="left"><a href="/">최신순</a></div>
       <div class="left"><a href="/posts?orderBy=VOTE">추천순</a></div>
       <div class="left"><a href="/posts/wish">찜목록</a></div>
-      <div class="left"><a href="#">내가쓴글</a></div>
-      <div class="right"><a href="#">검색</a></div>
+      <div class="left"><a href="/posts/my">내가쓴글</a></div>
+      <div class="right"><a onclick="document.getElementById('search-box').classList.toggle('on')">검색</a></div>
+      <div id="search-box" class="right off">
+        <form action="/posts/search" id="search-form">
+          <input type="text" id="search-input" name="keyword" class="input"
+                 style="width: 15em; height: 1.4em; padding: 0.2em 2em 0.2em 0.2em; font-size: 0.9em;position: absolute; top: 50%; right: 7em; transform: translate(0, -50%)">
+          <a onclick="checkAndSearch(document.getElementById('search-input'), document.getElementById('search-form'))"
+             style="position: absolute; top: 50%; right: 6.4em; transform: translate(0, -50%); width: 1.5em; height: 1.5em; padding: 0;">
+            <img src="/search.png" style="width: 70%; height: 70%; padding: 15%; opacity: 0.5;" alt="">
+          </a>
+        </form>
+      </div>
     </div>
 
     <form action method="post" th:object="${postSaveDTO}" enctype="multipart/form-data">
@@ -202,6 +222,12 @@
 
     function buttonBackgroundOff() {
       document.getElementById("fileNameButton").style.backgroundColor = "#fff";
+    }
+
+    function checkAndSearch(inputElement, formElement) {
+      if (inputElement.value.trim().length > 1) {
+        formElement.submit();
+      }
     }
 
   </script>
