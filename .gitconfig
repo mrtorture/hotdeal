@@ -1,4 +1,6 @@
 [user]
-	emil = joejoeya@gmail.com
 	name = mrtorture
 	email = joejoeya@gmail.com
+
+[alias]
+	logg = log --graph --all --oneline

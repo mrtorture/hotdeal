@@ -31,7 +31,7 @@ public class PostSaveDTO {
     private String content;
     private MultipartFile imageFile;
 
-    public static PostSaveDTO toPostFormDTO(PostDTO postDTO) {
+    public static PostSaveDTO toPostSaveDTO(PostDTO postDTO) {
 
         PostSaveDTO postSaveDTO = PostSaveDTO.builder()
                 .postId(postDTO.getPostId())

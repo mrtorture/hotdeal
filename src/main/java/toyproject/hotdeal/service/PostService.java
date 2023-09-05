@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import toyproject.hotdeal.dao.*;
-import toyproject.hotdeal.dto.controller.PostPreviewParams;
 import toyproject.hotdeal.dto.controller.PostSaveDTO;
 import toyproject.hotdeal.dto.dao.*;
 import toyproject.hotdeal.dto.controller.PostPreviewDTO;
@@ -89,7 +88,7 @@ public class PostService {
 
         PostDTO postDTO = result.get();
 
-        return PostSaveDTO.toPostFormDTO(postDTO);
+        return PostSaveDTO.toPostSaveDTO(postDTO);
     }
 
     public Long getMemberId(Long postId) {
