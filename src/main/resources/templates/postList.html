@@ -291,7 +291,7 @@
             <a th:href="@{/posts/{postId}(postId=${postPreview.postId}, board=${postPreviewParams.board},
             orderBy=${postPreviewParams.orderBy}, category=${postPreviewParams.category}, createDate=${postPreviewParams.createDate}, keyword=${postPreviewParams.keyword},
             pageNumber=${postPreviewParams.pageNumber})}" style="cursor: pointer;">
-              <img src="/xbox_controller.png" alt="xbox_controller" th:src="@{|/upload/${postPreview.thumbnail}|}">
+              <img src="/xbox_controller.png" alt="xbox_controller" th:src="${postPreview.thumbnail}">
             </a>
             <div>
               <div class="a-container">

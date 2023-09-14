@@ -25,7 +25,7 @@ public class PostViewDTO {
     private String content;
     private MultipartFile imageFile;
     private String originalFilename;
-    private String storedFilename;
+    private String storedFileUrl;
     private Integer hit;
     private Long votesCount;
     private LocalDateTime createDate;
@@ -53,7 +53,7 @@ public class PostViewDTO {
     public static PostViewDTO toPostViewDTO(PostDTO postDTO, Long votesCount, ImageDTO imageDTO) {
         PostViewDTO postViewDTO = toPostViewDTO(postDTO, votesCount);
         postViewDTO.setOriginalFilename(imageDTO.getOriginalFilename());
-        postViewDTO.setStoredFilename(imageDTO.getStoredFilename());
+        postViewDTO.setStoredFileUrl(imageDTO.getStoredFileUrl());
 
         return postViewDTO;
     }

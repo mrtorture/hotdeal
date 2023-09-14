@@ -19,7 +19,7 @@ public class ImageMapperTest {
         ImageDTO imageDTO = ImageDTO.builder()
                 .postId(2L)
                 .originalFilename("tomato.jpg")
-                .storedFilename("1686807613590_tomato.jpg")
+                .storedFileUrl("1686807613590_tomato.jpg")
                 .build();
 
         imageMapper.save(imageDTO);

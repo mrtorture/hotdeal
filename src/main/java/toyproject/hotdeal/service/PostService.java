@@ -1,5 +1,8 @@
 package toyproject.hotdeal.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,13 +31,12 @@ public class PostService {
     private final CommentMapper commentMapper;
     private final VoteMapper voteMapper;
     private final VotesCountMapper votesCountMapper;
+    private final AmazonS3Client amazonS3Client;
 
-    private static String fileDir;
-
-    @Value("${file.dir}")
-    public void setFileDir(String fileDir) {
-        this.fileDir = fileDir;
-    }
+    @Value("${file.upload-dir}")
+    private String fileDir;
+    @Value("${aws.s3.bucket}")
+    private String bucket;
 
     public Long save(PostSaveDTO postSaveDTO) throws IOException {
         log.info("PostService.save()");
@@ -116,7 +118,7 @@ public class PostService {
             //to be modified when PostDTO have thumbnail column.
             List<ImageDTO> imageDTOList = imageMapper.findByPostId(postDTO.getPostId());
             if (!imageDTOList.isEmpty()) {
-                postPreviewDTO.setThumbnail(imageDTOList.get(0).getStoredFilename());
+                postPreviewDTO.setThumbnail(imageDTOList.get(0).getStoredFileUrl());
 
             }
 
@@ -139,7 +141,7 @@ public class PostService {
 
             //to be modified to delete stored image files.
             for (ImageDTO imageDTO : imageDTOList) {
-                Files.deleteIfExists(Paths.get(fileDir + imageDTO.getStoredFilename()));
+                Files.deleteIfExists(Paths.get(fileDir + imageDTO.getStoredFileUrl()));
                 imageMapper.delete(imageDTO.getImageId());
             }
         }
@@ -182,17 +184,23 @@ public class PostService {
         return result;
     }
 
-    private static ImageDTO toImageDTO(PostSaveDTO postSaveDTO, Long postId) throws IOException {
+    private ImageDTO toImageDTO(PostSaveDTO postSaveDTO, Long postId) throws IOException {
         MultipartFile thumbnail = postSaveDTO.getImageFile();
         String originalFilename = thumbnail.getOriginalFilename();
         String storedFilename = System.currentTimeMillis() + "_" + originalFilename;
         String filePath = fileDir + storedFilename;
-        thumbnail.transferTo(new File(filePath));
+        File storedFile = new File(filePath);
+        thumbnail.transferTo(storedFile);
+
+        //must need metadata or acl?
+        amazonS3Client.putObject(new PutObjectRequest(bucket, storedFilename, storedFile).withCannedAcl(CannedAccessControlList.PublicRead));
+        String storedFileUrl = amazonS3Client.getUrl(bucket, storedFilename).toString();
+        storedFile.delete();
 
         ImageDTO imageDTO = ImageDTO.builder()
                 .postId(postId)
                 .originalFilename(originalFilename)
-                .storedFilename(storedFilename)
+                .storedFileUrl(storedFileUrl)
                 .build();
         return imageDTO;
     }

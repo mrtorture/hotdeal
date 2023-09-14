@@ -43,7 +43,7 @@ public class WishService {
 
             List<ImageDTO> imageDTOList = imageMapper.findByPostId(postDTO.getPostId());
             if (!imageDTOList.isEmpty()) {
-                postPreviewDTO.setThumbnail(imageDTOList.get(0).getStoredFilename());
+                postPreviewDTO.setThumbnail(imageDTOList.get(0).getStoredFileUrl());
             }
 
             postPreviewDTOList.add(postPreviewDTO);

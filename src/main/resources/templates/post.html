@@ -185,7 +185,7 @@
       <div style="padding: 1.5em 0 0.7em; border-bottom: solid 1px #ccc;">
         <div>
           <div>
-            <img th:src="|/upload/*{storedFilename}|" style="width: 100%; object-fit: contain;">
+            <img th:src="*{storedFileUrl}" style="width: 100%; object-fit: contain;">
           </div>
           <p th:text="*{content}">와우 회원이셔야 합니다. 회원 아닐시 2천원 더 비싸네요. <br>
             쇼크블루 컬러이고 52,240원 나옵니다. 컨트롤러 찾으시는분들 참고하세요. <br>

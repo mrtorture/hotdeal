@@ -9,14 +9,14 @@ import toyproject.hotdeal.interceptor.LoginCheckInterceptor;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private String mapping = "/upload/**";
-    private String resourceUri = "file:///C:/Projects/Java/toyproject/hotdeal/upload/";
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(mapping)
-                .addResourceLocations(resourceUri);
-    }
+//    private String mapping = "/upload/**";
+//    private String resourceUri = "file:///C:/Projects/Java/toyproject/hotdeal/upload/";
+//
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler(mapping)
+//                .addResourceLocations(resourceUri);
+//    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

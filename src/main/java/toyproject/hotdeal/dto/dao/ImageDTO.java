@@ -12,7 +12,7 @@ public class ImageDTO {
     private Long imageId;
     private Long postId;
     private String originalFilename;
-    private String storedFilename;
+    private String storedFileUrl;
     private LocalDateTime createDate;
 
 }
