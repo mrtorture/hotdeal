@@ -192,3 +192,28 @@ git status
 git commit -am "db to aws rds"
 git logg
 git push
+ls
+cd src
+ls
+cd main
+ls
+cd resources
+ls
+git status
+nano .gitignore
+cd ~
+ls
+ls -al
+nano .gitignore
+git staus
+git status
+git add .
+git status
+git add .
+git commit -m "modified to store image in AWS S3"
+git status
+git -l
+git lg
+git logg
+git push
+git logg

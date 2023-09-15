@@ -141,7 +141,10 @@ public class PostService {
 
             //to be modified to delete stored image files.
             for (ImageDTO imageDTO : imageDTOList) {
-                Files.deleteIfExists(Paths.get(fileDir + imageDTO.getStoredFileUrl()));
+//                Files.deleteIfExists(Paths.get(fileDir + imageDTO.getStoredFileUrl()));
+
+                String storedFilename = imageDTO.getStoredFilename();
+                amazonS3Client.deleteObject(bucket, storedFilename);
                 imageMapper.delete(imageDTO.getImageId());
             }
         }
@@ -200,6 +203,7 @@ public class PostService {
         ImageDTO imageDTO = ImageDTO.builder()
                 .postId(postId)
                 .originalFilename(originalFilename)
+                .storedFilename(storedFilename)
                 .storedFileUrl(storedFileUrl)
                 .build();
         return imageDTO;
