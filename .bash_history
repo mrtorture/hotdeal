@@ -217,3 +217,21 @@ git lg
 git logg
 git push
 git logg
+ls
+git status
+git logg
+git add .
+git commit -m "to delete image in AWS S3"
+git logg
+git push
+git log
+cd /
+ls
+cd ~
+ll
+ls -al
+ls -l
+ls -al
+la
+ll
+l
