@@ -235,3 +235,37 @@ ls -al
 la
 ll
 l
+ls --help | grep sort
+ls
+clear
+ls --help | grep sort
+ls
+cd ..
+ls
+mkdir temp; rm temp; cd temp; mkdir temp2;
+mkdir temp; rm -r temp; cd temp; mkdir temp2;
+ls
+rm -r temp2
+mkdir temp && rm -r temp && cd temp && mkdir temp2
+ls
+echo "hello"
+echo $0
+ls
+zsh
+apt-get --help
+which ls
+cd /usr/bin/ls
+cd /usr/bin/ls
+which ls
+cd /usr
+cd bin
+cd ls
+ls
+cd ~
+ls
+touch tmp.txt
+git status
+git add .
+git commit -m "test"
+git push
+git --version
