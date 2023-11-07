@@ -12,6 +12,6 @@
 * AWS EC2, RDS, S3, Linux
 
 ### 아키텍쳐
-![핫딜맨 아키텍쳐](https://github.com/mrtorture/hotdeal/blob/master/%EB%B0%B0%ED%8F%AC.png)
+<img width=50% src="https://github.com/mrtorture/hotdeal/blob/master/%EB%B0%B0%ED%8F%AC.png"/>
 
 ### 주요기능
