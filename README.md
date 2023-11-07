@@ -15,4 +15,6 @@
 <img width=50% src="https://github.com/mrtorture/hotdeal/blob/master/%EB%B0%B0%ED%8F%AC.png"/>
 
 ### 주요기능
+#### 회원가입, 로그인
+
 ### 로드맵
