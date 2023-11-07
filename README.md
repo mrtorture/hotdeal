@@ -7,4 +7,4 @@
 [배포 링크](http://ec2-52-79-247-202.ap-northeast-2.compute.amazonaws.com:8080/)
 
 ### 아키텍쳐
-![핫딜맨 아키텍쳐](https://drive.google.com/file/d/1R0A0woqKEf7t9ZV8DSSBVHFcB1SeCmBr/view?usp=sharing)
+![핫딜맨 아키텍쳐](https://github.com/mrtorture/hotdeal/blob/master/%EB%B0%B0%ED%8F%AC.png)
