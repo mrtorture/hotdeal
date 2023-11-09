@@ -6,7 +6,7 @@ build/
 !**/src/test/**/build/
 
 ### Spring Boot properties ###
-application-prod.properties
+application-private.properties
 aws.properties
 
 

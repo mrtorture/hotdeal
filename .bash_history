@@ -269,3 +269,226 @@ git add .
 git commit -m "test"
 git push
 git --version
+ls
+git status
+git commit -m "test deleted"
+git push
+git status
+git commit -m "test modified"
+git status
+git add .
+git commit -m "test modified"
+git push
+ls
+cd /
+ls
+ls -al
+ls
+cd /c
+ls
+cd users
+ls
+cd joejoe
+ls
+cd desktop
+ls
+cd 코딩
+ls
+cp hotdeal-was.pem /
+sudo cp hotdeal-was.pem /
+ls *.pem
+cp --help
+cp hotdeal-was.pem /tmp
+cd /tmp
+cd /c
+ls
+cd projects
+ls
+cd java
+ls
+cd toyproject
+ls
+cd hotdeal
+ls
+cd src
+ls
+cd main
+ls
+cd java
+ls
+cd toyproject
+ls
+cd hotdeal
+ls
+cd ..
+ls
+cd ..
+ls
+cd ..
+ls
+cd resources
+ls
+cp application-prod.properties /tmp
+cp aws.properties /tmp
+cd /tmp
+ls
+ls -al *.pem
+ls -al *.properties
+scp -i hotdeal-was.pem aws.properties ubuntu@ec2-52-79-247-202.ap-northeast-2.compute.amazonaws.com:~/
+scp -i hotdeal-was.pem application-prod.properties ubuntu@ec2-52-79-247-202.ap-northeast-2.compute.amazonaws.com:~/
+cd /tmp
+ls
+ssh -i "hotdeal-was.pem" ubuntu@ec2-52-79-247-202.ap-northeast-2.compute.amazonaws.com
+pwd
+cd /c
+cd projects
+pwd
+ls
+cd cpp
+pwd
+ls
+cd algorithms
+ls
+cd exhaustive search
+cd 'exhaustive search'
+ls
+cd ..
+ls
+cd ..
+ls
+cd algorithms
+git init
+ls
+git status
+git add .
+ls
+git status
+git commit -m "first"
+git status
+git remote add https://github.com/mrtorture/algorithm_practice.git
+git remote add algorithm_practice https://github.com/mrtorture/algorithm_practice.git
+git status
+git logg
+git push
+git push --set-upstream algorithm_practice master
+git status
+git logg
+ls
+cd ..
+ls
+cd ..
+ls
+cd ..
+ls
+cd cpp
+ls
+ls
+cd algorithms
+ls
+cd 'exhaustive search'
+ls
+cd ..
+ls
+ls -al
+git status
+git logg
+git remote --help
+git remote algorithm_practice algorithm_cpp
+git remote rename algorithm_practice algorithm_cpp
+git logg
+ls
+git commit -am "modified variables type, name"
+git push
+ls
+cd ..
+ls
+pw
+pwd
+cd .. ..
+cd ..
+ls
+cd ..
+cd cpp
+cd algorithms
+ls
+cd 'exhaustive search'
+ls
+git add .
+git push -m "added counting not surrounded houses"
+git commit -m "added counting not surrounded houses"
+git push
+git logg
+pwd
+cd /c/projects
+cd cpp
+ls
+cd algorithms
+ls
+cd 'exhaustive search'
+ls
+cd 'sum of separated numbers'
+ls
+ls
+git add .
+git commit -m "sum of separated numbers"
+git push
+git logg
+echo $HOME
+cd ~
+ls
+ls -al
+ls
+ls -al
+whereis .bashrc
+where .bashrc
+echo $HOMEPATH
+echo $HOME
+export HOME=/c/Projects
+cd /c/
+ls
+cd 'Program Files'
+ls
+cd Git
+ls
+cd etc
+ls
+ls -al
+nano bash.bashrc
+nano profile
+ls
+cd profile.d
+ls
+nano bash_profile.sh
+cd ..
+ls -al
+echo $HOME
+pwd
+s
+ls
+git add .
+git commit -m "added patterns, methods"
+git push
+ls
+cd 'exhaustive search'
+ls
+cd ..
+git add .
+git commit -m "counting 753 numbers"
+git push
+git logg
+git rename -help
+git --help
+commit -m "modified comment"
+git commit -m "modified comment"
+git status
+git add .
+git commit -m "modified comment"
+git push
+git add .
+git commit -m "finding subtotal"
+git push
+git logg
+git commit -m "finding subtotal"
+git add .
+git commit -m "finding subtotal"
+git push
