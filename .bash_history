@@ -1,29 +1,3 @@
-pwd
-ls
-ls -al
-nano .gitignore
-git init
-ls -al
-git add .
-git status
-git status
-git commit -m "first"
-git config --global joejoeya@gmail.com
-git config --global user.emil "joejoeya@gmail.com"
-git config --global user.name "mrtorture"
-git commit -m "first"
-git config --global user.email "joejoeya@gmail.com"
-git commit -m "first"
-git log
-git remote add --help
-git remote add origin https://github.com/mrtorture/hotdeal.git
-git remote
-git push -u --help
-git push -u origin master
-git status
-git add .
-git commit -m "modifed post/update form"
-git log
 git push
 git status
 git reset --help
@@ -492,3 +466,35 @@ git commit -m "finding subtotal"
 git add .
 git commit -m "finding subtotal"
 git push
+cd /c/Projects
+ls
+cd Java
+ls
+cd toyproject
+ls
+cd hotdeal
+ls
+ls -al
+nano .gitignore
+ls
+ls
+pwd
+git status
+git status
+git push
+git commit -m "modified property"
+add .
+git add .
+git commit -m "modified properties"
+git push
+git pull
+git status
+git add .
+git commit -m "property modified"
+git push
+scp
+pwd
+cd ..
+ls
+scp -i "hotdeal-was.pem" hotdeal/src/main/resources/application-private.properties ubuntu@ec2-52-79-247-202.ap-northeast-2.compute.amazonaws.com
+scp -i "hotdeal-was.pem" hotdeal/src/main/resources/application-private.properties ubuntu@ec2-52-79-247-202.ap-northeast-2.compute.amazonaws.com:~/

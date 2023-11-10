@@ -33,7 +33,7 @@ public class PostService {
     private final VotesCountMapper votesCountMapper;
     private final AmazonS3Client amazonS3Client;
 
-    @Value("${file.upload-dir}")
+    @Value("${image.fileDir}")
     private String fileDir;
     @Value("${aws.s3.bucket}")
     private String bucket;
