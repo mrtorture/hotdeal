@@ -1,19 +1,4 @@
 git status
-git commit -am "modified nav of post updateform"
-git push
-git log
-git log -stat
-git log --stat
-git reset --hard 87e3de60045a38a37087ef20fc5ffdba2b3239e9
-git status
-git commit -am "modified post upadateform 2"
-git log
-git push
-git fetch
-git log
-ls
-git pull
-git status
 git log
 git reset --hard 8383e0666455c3562f9d9af441d52b1e70b1711a
 git fetch
@@ -497,4 +482,19 @@ cd toyproject/hotdeal
 ls
 git add .
 git commit -m "properties added"
+git push
+pwd
+cd ..
+cd..
+cd ..
+ls
+cd jaca
+cd java
+ls
+cd toyproject
+ls
+cd hotdeal
+ls
+git add .
+git commit -m "commentsCount problem was fixed."
 git push
