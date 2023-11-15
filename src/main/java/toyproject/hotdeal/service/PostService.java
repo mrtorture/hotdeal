@@ -111,9 +111,9 @@ public class PostService {
         List<PostDTO> postDTOList = postMapper.findPage(postListParams);
         List<PostPreviewDTO> postPreviewDTOList = new ArrayList<>();
         for (PostDTO postDTO : postDTOList) {
-            Long commentsCount = commentMapper.getCountByPostId(postDTO.getPostId());
+//            Long commentsCount = commentMapper.getCountByPostId(postDTO.getPostId());
             Long votesCount = voteMapper.getCount(postDTO.getPostId());
-            PostPreviewDTO postPreviewDTO = PostPreviewDTO.toPostPreviewDTO(postDTO, commentsCount, votesCount);
+            PostPreviewDTO postPreviewDTO = PostPreviewDTO.toPostPreviewDTO(postDTO, votesCount);
 
             //to be modified when PostDTO have thumbnail column.
             List<ImageDTO> imageDTOList = imageMapper.findByPostId(postDTO.getPostId());
@@ -185,6 +185,18 @@ public class PostService {
 //        }
 
         return result;
+    }
+
+    public Long getCommentsCount(Long postId) {
+        return postMapper.getCommentsCount(postId);
+    }
+
+    public int increaseCommentsCount(Long postId) {
+        return postMapper.increaseCommentsCount(postId);
+    }
+
+    public int decreaseCommentsCount(Long postId) {
+        return postMapper.decreaseCommentsCount(postId);
     }
 
     private ImageDTO toImageDTO(PostSaveDTO postSaveDTO, Long postId) throws IOException {

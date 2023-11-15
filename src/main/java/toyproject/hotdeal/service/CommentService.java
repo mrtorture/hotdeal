@@ -17,6 +17,7 @@ import java.util.Optional;
 public class CommentService {
 
     private final CommentMapper commentMapper;
+    private final PostService postService;
 
     public List<CommentViewDTO> findByPostId(Long postId) {
         log.info("CommentService.findByPostId()");
@@ -33,26 +34,38 @@ public class CommentService {
     public Long getCountByPostId(Long postId) {
         log.info("CommentService.getCount()");
 
-        return commentMapper.getCountByPostId(postId);
+        return postService.getCommentsCount(postId);
     }
 
     public int save(CommentDTO commentDTO, Long memberId) {
         commentDTO.setMemberId(memberId);
 
-        return commentMapper.save(commentDTO);
+        int result = commentMapper.save(commentDTO);
+        if (result != 0) {
+            postService.increaseCommentsCount(commentDTO.getPostId());
+        }
+
+        return result;
     }
 
     public int delete(Long commentId) {
         log.info("CommentService.delete()");
 
         Long commentsCount = commentMapper.getCountByParentId(commentId);
+        CommentDTO commentDTO = commentMapper.findByCommentId(commentId).get();
+        int result = 0;
         if (commentsCount > 0) {
-            CommentDTO commentDTO = commentMapper.findByCommentId(commentId).get();
             commentDTO.setDeleted(1);
-            return commentMapper.update(commentDTO);
+            result = commentMapper.update(commentDTO);
+        } else {
+            result = commentMapper.delete(commentId);
         }
 
-        return commentMapper.delete(commentId);
+        if (result != 0) {
+            postService.decreaseCommentsCount(commentDTO.getPostId());
+        }
+
+        return result;
     }
 
     public int update(CommentDTO commentDTO) {

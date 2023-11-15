@@ -19,6 +19,7 @@ public class PostDTO {
     private String postContent;
     private Integer hit;
     private LocalDateTime createDate;
+    private Long commentsCount;
 
     public static PostDTO toPostDTO(PostSaveDTO postSaveDTO) {
         PostDTO postDTO = PostDTO.builder()

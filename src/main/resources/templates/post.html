@@ -395,7 +395,13 @@
           let sortedComments = getSortedComments(res, null);
           console.log("sorted comments: ", sortedComments);
 
-          document.getElementById("comments-count").innerText = res.length;
+          let length = 0;
+          for (let comment of res) {
+            if (comment.deleted == 0) {
+              length++;
+            }
+          }
+          document.getElementById("comments-count").innerText = length.toString();
 
           // let commentsHtml = "";
           let commentListDiv = document.getElementById("commentList");

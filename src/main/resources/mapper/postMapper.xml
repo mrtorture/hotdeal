@@ -9,12 +9,12 @@
     </insert>
 
     <select id="findByPostId" resultType="PostDTO">
-        SELECT post_id, member_id, category, title, price, link, post_content, hit, create_date
+        SELECT post_id, member_id, category, title, price, link, post_content, hit, create_date, comments_count
         FROM post
         WHERE post_id = #{postId}
     </select>
     <select id="findPage" resultType="PostDTO">
-        SELECT post_id, member_id, category, title, price, link, post_content, hit, create_date
+        SELECT post_id, member_id, category, title, price, link, post_content, hit, create_date, comments_count
         FROM post NATURAL JOIN
         <if test="orderBy.getDescription() == 'DATE'">
             (SELECT post_id FROM post
@@ -161,6 +161,24 @@
         SET hit = hit + 1
         WHERE post_id = #{postId}
     </update>
+
+    <select id="getCommentsCount">
+        SELECT comments_count FROM post
+        WHERE post_id = #{postId}
+    </select>
+
+    <update id="increaseCommentsCount">
+        UPDATE post
+        SET comments_count = comments_count + 1
+        WHERE post_id = #{postId}
+    </update>
+
+    <update id="decreaseCommentsCount">
+        UPDATE post
+        SET comments_count = comments_count - 1
+        WHERE post_id = #{postId}
+    </update>
+
 
 
 </mapper>

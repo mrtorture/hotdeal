@@ -21,14 +21,14 @@ public class PostPreviewDTO {
     private Long votesCount;
     private LocalDateTime createDate;
 
-    public static PostPreviewDTO toPostPreviewDTO(PostDTO postDTO, Long commentsCount, Long votesCount) {
+    public static PostPreviewDTO toPostPreviewDTO(PostDTO postDTO, Long votesCount) {
         PostPreviewDTO postPreviewDTO = PostPreviewDTO.builder()
                 .postId(postDTO.getPostId())
                 .memberId(postDTO.getMemberId())
                 .category(postDTO.getCategory())
                 .title(postDTO.getTitle())
                 .price(postDTO.getPrice())
-                .commentsCount(commentsCount)
+                .commentsCount(postDTO.getCommentsCount())
                 .hit(postDTO.getHit())
                 .votesCount(votesCount)
                 .createDate(postDTO.getCreateDate())

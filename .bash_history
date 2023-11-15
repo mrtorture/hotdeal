@@ -1,12 +1,3 @@
-git push
-git status
-git reset --help
-git reset --hard 22d4a39e0c18dfd952638cd78d931709fecbe23d
-git status
-git status
-git commit -am "modified nav of post saveform"
-git push
-ls -al
 git status
 git commit -am "modified nav of post updateform"
 git push
@@ -498,3 +489,12 @@ cd ..
 ls
 scp -i "hotdeal-was.pem" hotdeal/src/main/resources/application-private.properties ubuntu@ec2-52-79-247-202.ap-northeast-2.compute.amazonaws.com
 scp -i "hotdeal-was.pem" hotdeal/src/main/resources/application-private.properties ubuntu@ec2-52-79-247-202.ap-northeast-2.compute.amazonaws.com:~/
+cd /c/projects/java/hotdeal
+cd /c/projects/java
+ls
+cd toyprojec
+cd toyproject/hotdeal
+ls
+git add .
+git commit -m "properties added"
+git push

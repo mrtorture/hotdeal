@@ -37,9 +37,9 @@ public class WishService {
         List<PostDTO> postDTOList = wishMapper.findByMemberId(memberId, pageSize, offset);
         List<PostPreviewDTO> postPreviewDTOList = new ArrayList<>();
         for (PostDTO postDTO : postDTOList) {
-            Long commentsCount = commentMapper.getCountByPostId(postDTO.getPostId());
+//            Long commentsCount = commentMapper.getCountByPostId(postDTO.getPostId());
             Long votesCount = voteMapper.getCount(postDTO.getPostId());
-            PostPreviewDTO postPreviewDTO = PostPreviewDTO.toPostPreviewDTO(postDTO, commentsCount, votesCount);
+            PostPreviewDTO postPreviewDTO = PostPreviewDTO.toPostPreviewDTO(postDTO, votesCount);
 
             List<ImageDTO> imageDTOList = imageMapper.findByPostId(postDTO.getPostId());
             if (!imageDTOList.isEmpty()) {

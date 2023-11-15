@@ -29,4 +29,10 @@ public interface PostMapper {
 
     int increaseHit(Long postId);
 
+    Long getCommentsCount(Long postId);
+
+    int increaseCommentsCount(Long postId);
+
+    int decreaseCommentsCount(Long postId);
+
 }
