@@ -23,6 +23,7 @@
 #### 관심있는 글이 있는지 찾아보는 과정(필터링, 정렬, 검색)
 <img width=90% src="https://github.com/mrtorture/hotdeal_image/blob/main/2.%20%EA%B4%80%EC%8B%AC%EC%9E%88%EB%8A%94%EA%B8%80%20%EC%B0%BE%EA%B8%B0(%ED%95%84%ED%84%B0%EB%A7%81,%20%EC%A0%95%EB%A0%AC,%20%EA%B2%80%EC%83%89)_231116.gif?raw=true">
 
-#### 회원가입, 로그인
+#### 추가기능 위해 회원가입하는 과정(가입, 로그인, 입력값 검증)
+<img width=90% src="https://github.com/mrtorture/hotdeal_image/blob/main/3.%20%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85(%EA%B0%80%EC%9E%85,%20%EB%A1%9C%EA%B7%B8%EC%9D%B8,%20%EA%B2%80%EC%A6%9D)_231116.gif?raw=true">
 
 ### 로드맵
