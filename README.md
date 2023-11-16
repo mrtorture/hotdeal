@@ -16,7 +16,7 @@
 
 ### 주요기능
 #### 처음 사용자가 둘러보는 과정(게시글 읽기, 페이징, 목록으로 돌아가기)
-<img width=70% src ="https://github.com/mrtorture/hotdeal_image/blob/main/1.%20%EC%B2%98%EC%9D%8C%20%EC%82%AC%EC%9A%A9%EC%9E%90(%EC%9D%BD%EA%B8%B0,%20%ED%8E%98%EC%9D%B4%EC%A7%95,%20%EB%AA%A9%EB%A1%9D)_231116.gif?raw=true"/>
+<img width=80% src ="https://github.com/mrtorture/hotdeal_image/blob/main/1.%20%EC%B2%98%EC%9D%8C%20%EC%82%AC%EC%9A%A9%EC%9E%90(%EC%9D%BD%EA%B8%B0,%20%ED%8E%98%EC%9D%B4%EC%A7%95,%20%EB%AA%A9%EB%A1%9D)_231116.gif?raw=true"/>
 
 #### 회원가입, 로그인
 
