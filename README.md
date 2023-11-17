@@ -27,6 +27,9 @@
 #### 글 작성하고 확인하는 과정(로그인, 입력값 검증, 글쓰기)
 <img width=90% src="https://github.com/mrtorture/hotdeal_image/blob/main/4.%20%EA%B8%80%EC%93%B0%EA%B8%B0(%EB%A1%9C%EA%B7%B8%EC%9D%B8,%20%EA%B2%80%EC%A6%9D,%20%EA%B8%80%EC%93%B0%EA%B8%B0)_231117.gif?raw=true">
 
+### 글 수정하고 삭제하는 과정(작성글, 글수정, 글삭제)
+<img src="https://github.com/mrtorture/hotdeal_image/blob/main/5.%20%EA%B8%80%EC%88%98%EC%A0%95%ED%95%98%EA%B3%A0%20%EC%82%AD%EC%A0%9C.gif?raw=true">
+
 
 
 ### 로드맵
