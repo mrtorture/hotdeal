@@ -34,6 +34,6 @@
 <img width=90% src="https://github.com/mrtorture/hotdeal_image/blob/main/6.%20%EB%8C%80%EB%8C%93%EA%B8%80(%EB%8C%80%EB%8C%93%EA%B8%80%20%EC%9E%91%EC%84%B1,%20%EC%88%98%EC%A0%95,%20%EC%82%AD%EC%A0%9C)_1280_231118.gif?raw=true">
 
 #### 추천, 찜하기 관련(추천, 찜하기, 찜목록)
-<img width=90% src="">
+<img width=90% src="https://github.com/mrtorture/hotdeal_image/blob/main/7.%20%EC%B6%94%EC%B2%9C%ED%95%98%EA%B8%B0,%20%EC%B0%9C%ED%95%98%EA%B8%B0(%EC%B6%94%EC%B2%9C,%20%EC%B0%9C%ED%95%98%EA%B8%B0,%20%EC%B0%9C%EB%AA%A9%EB%A1%9D)_1280_231118.gif?raw=true">
 
 ### 로드맵
