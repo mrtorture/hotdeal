@@ -33,4 +33,7 @@
 #### 대댓글 관련(대댓글 작성, 수정, 삭제)
 <img width=90% src="https://github.com/mrtorture/hotdeal_image/blob/main/6.%20%EB%8C%80%EB%8C%93%EA%B8%80(%EB%8C%80%EB%8C%93%EA%B8%80%20%EC%9E%91%EC%84%B1,%20%EC%88%98%EC%A0%95,%20%EC%82%AD%EC%A0%9C)_1280_231118.gif?raw=true">
 
+#### 추천, 찜하기 관련(추천, 찜하기, 찜목록)
+<img width=90% src="">
+
 ### 로드맵
