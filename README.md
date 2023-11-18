@@ -30,6 +30,7 @@
 #### 글 수정하고 삭제하는 과정(작성글, 글수정, 글삭제)
 <img width=90% src="https://github.com/mrtorture/hotdeal_image/blob/main/5.%20%EA%B8%80%EC%88%98%EC%A0%95%ED%95%98%EA%B3%A0%20%EC%82%AD%EC%A0%9C(%EC%9E%91%EC%84%B1%EA%B8%80,%20%EA%B8%80%EC%88%98%EC%A0%95,%20%EA%B8%80%EC%82%AD%EC%A0%9C)_1280_231117.gif?raw=true">
 
-
+#### 대댓글 관련(대댓글 작성, 수정, 삭제)
+<img width=90% src="https://github.com/mrtorture/hotdeal_image/blob/main/6.%20%EB%8C%80%EB%8C%93%EA%B8%80(%EB%8C%80%EB%8C%93%EA%B8%80%20%EC%9E%91%EC%84%B1,%20%EC%88%98%EC%A0%95,%20%EC%82%AD%EC%A0%9C)_1280_231118.gif?raw=true">
 
 ### 로드맵
